@@ -16,7 +16,10 @@ const routes: Routes = [
       {
         // /dashboard/controlcenters
         path: 'controlcenters',
-        component: ControlCenterComponent,
+        loadComponent: () =>
+          import('./control-center/control-center.component').then(
+            (m) => m.ControlCenterComponent
+          ),
       },
     ],
   },

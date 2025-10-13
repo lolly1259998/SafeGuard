@@ -1,16 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-
-interface ControlCenter {
-  id: number;
-  name: string;
-  location: string;
-  description: string;
-  owner: string;
-  is_active: boolean;
-  created_at: Date;
-}
+import { ControlCenterService, ControlCenter } from './control-center.service'; // ✅ import du service
 
 @Component({
   selector: 'app-control-center',
@@ -19,49 +10,68 @@ interface ControlCenter {
   standalone: true,
   imports: [CommonModule, FormsModule],
 })
-export class ControlCenterComponent {
+export class ControlCenterComponent implements OnInit {
+  controlCenters: ControlCenter[] = [];
+  showAddForm: boolean = false;
+  editing: boolean = false;
   newCenter: Partial<ControlCenter> = {
     name: '',
     location: '',
     description: '',
-    owner: 'Admin', // exemple par défaut
+    owner: 'Admin',
     is_active: true,
-    created_at: new Date(),
   };
 
-  controlCenters: ControlCenter[] = [];
+  constructor(private service: ControlCenterService) {}
 
-  addCenter() {
+  ngOnInit() {
+    this.loadCenters();
+  }
+
+  loadCenters() {
+    this.service.getAll().subscribe((data) => {
+      this.controlCenters = data;
+    });
+  }
+
+  addOrUpdateCenter() {
     if (!this.newCenter.name) return;
-    const id =
-      this.controlCenters.length > 0
-        ? Math.max(...this.controlCenters.map((c) => c.id)) + 1
-        : 1;
 
-    const center: ControlCenter = {
-      id,
-      name: this.newCenter.name!,
-      location: this.newCenter.location || '',
-      description: this.newCenter.description || '',
-      owner: this.newCenter.owner || 'Admin',
-      is_active: this.newCenter.is_active ?? true,
-      created_at: new Date(),
-    };
+    if (this.editing && this.newCenter.id) {
+      this.service
+        .update(this.newCenter as ControlCenter)
+        .subscribe((updated) => {
+          const index = this.controlCenters.findIndex(
+            (c) => c.id === updated.id
+          );
+          if (index !== -1) this.controlCenters[index] = updated;
+        });
+      this.editing = false;
+    } else {
+      this.service.add(this.newCenter).subscribe((created) => {
+        this.controlCenters.push(created);
+      });
+    }
 
-    this.controlCenters.push(center);
-
-    // reset formulaire
     this.newCenter = {
       name: '',
       location: '',
       description: '',
       owner: 'Admin',
       is_active: true,
-      created_at: new Date(),
     };
+    this.showAddForm = false;
+  }
+
+  editCenter(center: ControlCenter) {
+    this.newCenter = { ...center };
+    this.editing = true;
+    this.showAddForm = true;
   }
 
   deleteCenter(id: number) {
-    this.controlCenters = this.controlCenters.filter((cc) => cc.id !== id);
+    this.service.delete(id).subscribe(() => {
+      this.controlCenters = this.controlCenters.filter((c) => c.id !== id);
+    });
   }
 }

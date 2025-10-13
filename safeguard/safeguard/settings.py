@@ -39,9 +39,11 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'Core',
     'rest_framework',
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -71,7 +73,10 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'safeguard.wsgi.application'
 
-
+# Autoriser ton frontend Angular
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:4200",
+]
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 

@@ -4,6 +4,7 @@ import { BackofficeRoutingModule } from './backoffice-routing.module';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { ControlCenterComponent } from './control-center/control-center.component';
 import { FormsModule } from '@angular/forms';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [],
@@ -13,6 +14,7 @@ import { FormsModule } from '@angular/forms';
     FormsModule,
     DashboardComponent,
     ControlCenterComponent,
+    HttpClientModule,
   ],
 })
 export class BackofficeModule {}
