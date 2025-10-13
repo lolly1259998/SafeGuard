@@ -20,9 +20,17 @@ http://localhost:4200/
 
 http://localhost:4200/dashboard
 
-# backoffice admin django
+# backoffice admin django:base de donnes
 
 http://127.0.0.1:8000/admin/
+
+# backoffice interface pour voir post edit get delete:comme swager
+
+http://127.0.0.1:8000/api/controlcenters/
+
+# backoffice interface pour voir edit delete
+
+http://127.0.0.1:8000/api/controlcenters/1
 
 # django backend
 
