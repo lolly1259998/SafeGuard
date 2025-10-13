@@ -20,7 +20,15 @@ http://localhost:4200/
 
 http://localhost:4200/dashboard
 
+# backoffice admin django
+
+http://127.0.0.1:8000/admin/
+
 # django backend
+
+source twinenv/Scripts/activate
+
+cd safeguard/
 
 py manage.py runserver
 
