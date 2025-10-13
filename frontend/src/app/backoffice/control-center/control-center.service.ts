@@ -21,22 +21,18 @@ export class ControlCenterService {
 
   constructor(private http: HttpClient) {}
 
-  // 🟢 Récupérer tous les control centers
   getAll(): Observable<ControlCenter[]> {
     return this.http.get<ControlCenter[]>(this.apiUrl);
   }
 
-  // 🟢 Ajouter un nouveau control center
   add(center: Partial<ControlCenter>): Observable<ControlCenter> {
     return this.http.post<ControlCenter>(this.apiUrl, center);
   }
 
-  // 🟢 Mettre à jour un control center
   update(center: ControlCenter): Observable<ControlCenter> {
     return this.http.put<ControlCenter>(`${this.apiUrl}${center.id}/`, center);
   }
 
-  // 🟢 Supprimer un control center
   delete(id: number): Observable<any> {
     return this.http.delete(`${this.apiUrl}${id}/`);
   }
