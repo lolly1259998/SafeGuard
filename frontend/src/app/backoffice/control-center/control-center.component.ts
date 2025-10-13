@@ -1,31 +1,67 @@
 import { Component } from '@angular/core';
-import { ControlCenterService, ControlCenter } from '../control-center.service';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+
+interface ControlCenter {
+  id: number;
+  name: string;
+  location: string;
+  description: string;
+  owner: string;
+  is_active: boolean;
+  created_at: Date;
+}
+
 @Component({
   selector: 'app-control-center',
-  imports: [],
   templateUrl: './control-center.component.html',
-  styleUrl: './control-center.component.css',
+  styleUrls: ['./control-center.component.css'],
+  standalone: true,
+  imports: [CommonModule, FormsModule],
 })
 export class ControlCenterComponent {
-  controlCenters: ControlCenter[] = [];
-  newCenter: Partial<ControlCenter> = {};
-  constructor(private service: ControlCenterService) {}
-  ngOnInit() {
-    this.loadCenters();
-  }
+  newCenter: Partial<ControlCenter> = {
+    name: '',
+    location: '',
+    description: '',
+    owner: 'Admin', // exemple par défaut
+    is_active: true,
+    created_at: new Date(),
+  };
 
-  loadCenters() {
-    this.service.getAll().subscribe((data) => (this.controlCenters = data));
-  }
+  controlCenters: ControlCenter[] = [];
 
   addCenter() {
-    this.service.create(this.newCenter).subscribe(() => {
-      this.loadCenters();
-      this.newCenter = {};
-    });
+    if (!this.newCenter.name) return;
+    const id =
+      this.controlCenters.length > 0
+        ? Math.max(...this.controlCenters.map((c) => c.id)) + 1
+        : 1;
+
+    const center: ControlCenter = {
+      id,
+      name: this.newCenter.name!,
+      location: this.newCenter.location || '',
+      description: this.newCenter.description || '',
+      owner: this.newCenter.owner || 'Admin',
+      is_active: this.newCenter.is_active ?? true,
+      created_at: new Date(),
+    };
+
+    this.controlCenters.push(center);
+
+    // reset formulaire
+    this.newCenter = {
+      name: '',
+      location: '',
+      description: '',
+      owner: 'Admin',
+      is_active: true,
+      created_at: new Date(),
+    };
   }
 
   deleteCenter(id: number) {
-    this.service.delete(id).subscribe(() => this.loadCenters());
+    this.controlCenters = this.controlCenters.filter((cc) => cc.id !== id);
   }
 }

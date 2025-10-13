@@ -1,5 +1,6 @@
 <div class="container my-4">
   <h2>Ajouter un Control Center</h2>
+
   <form (ngSubmit)="addCenter()" #centerForm="ngForm" class="mb-4">
     <div class="mb-2">
       <input
@@ -38,14 +39,18 @@
       *ngFor="let cc of controlCenters"
       class="list-group-item d-flex justify-content-between align-items-center"
     >
-      <span>
+      <div>
         <strong>{{ cc.name }}</strong> ({{ cc.location }})<br />
-        <small>{{ cc.description }}</small>
-      </span>
+        <small>{{ cc.description }}</small
+        ><br />
+        <small
+          >Owner: {{ cc.owner }} | Active: {{ cc.is_active }} | Created:
+          {{ cc.created_at | date : "short" }}</small
+        >
+      </div>
       <button class="btn btn-danger btn-sm" (click)="deleteCenter(cc.id)">
         Supprimer
       </button>
     </li>
   </ul>
 </div>
-<p>control-center works!</p>

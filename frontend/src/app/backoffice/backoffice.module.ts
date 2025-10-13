@@ -6,7 +6,13 @@ import { ControlCenterComponent } from './control-center/control-center.componen
 import { FormsModule } from '@angular/forms';
 
 @NgModule({
-  declarations: [DashboardComponent, ControlCenterComponent],
-  imports: [CommonModule, BackofficeRoutingModule, FormsModule],
+  declarations: [],
+  imports: [
+    CommonModule,
+    BackofficeRoutingModule,
+    FormsModule,
+    DashboardComponent,
+    ControlCenterComponent,
+  ],
 })
 export class BackofficeModule {}
