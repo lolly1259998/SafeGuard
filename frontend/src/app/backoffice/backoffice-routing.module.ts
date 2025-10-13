@@ -4,12 +4,21 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { ControlCenterComponent } from './control-center/control-center.component';
 const routes: Routes = [
   {
+    // /dashboard
     path: '',
     component: DashboardComponent,
-  },
-  {
-    path: 'control-center',
-    component: ControlCenterComponent,
+    children: [
+      /*{
+        // /dashboard
+         path: '',
+        component: ControlCenterComponent,
+      },*/
+      {
+        // /dashboard/controlcenters
+        path: 'controlcenters',
+        component: ControlCenterComponent,
+      },
+    ],
   },
 ];
 
