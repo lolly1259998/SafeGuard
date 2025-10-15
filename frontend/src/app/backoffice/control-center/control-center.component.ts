@@ -18,7 +18,7 @@ export class ControlCenterComponent implements OnInit {
     name: '',
     location: '',
     description: '',
-    owner: 'Admin',
+    owner: '',
     is_active: true,
   };
 
@@ -57,7 +57,7 @@ export class ControlCenterComponent implements OnInit {
       name: '',
       location: '',
       description: '',
-      owner: 'Admin',
+      owner: '',
       is_active: true,
     };
     this.showAddForm = false;

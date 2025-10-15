@@ -1,6 +1,6 @@
 from django.urls import path,include
 from .views import DashboardView
-from .views_control_center import ControlCenterViewSet
+from Core.views_control_center import ControlCenterViewSet
 from rest_framework.routers import DefaultRouter
 
 router = DefaultRouter()
