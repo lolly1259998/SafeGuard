@@ -1,0 +1,55 @@
+.container-fluid {
+  margin-left: 240px;
+  transition: margin-left 0.3s ease;
+}
+
+.card {
+  border-radius: 14px;
+  background: #ffffff;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+}
+
+.table {
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.table thead {
+  background-color: #f3f7fa;
+}
+
+.text-primary {
+  color: #0f63d9 !important;
+}
+
+.badge {
+  font-weight: 600;
+}
+
+.progress {
+  background-color: #e9ecef;
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+.progress-bar {
+  transition: width 0.6s ease;
+}
+
+.btn-outline-primary {
+  border-color: #0f63d9;
+  color: #0f63d9;
+}
+
+.btn-outline-primary:hover {
+  background-color: #0f63d9;
+  color: #fff;
+}
+
+.text-warning {
+  color: #ff9f43 !important;
+}
+
+.text-success {
+  color: #28a745 !important;
+}

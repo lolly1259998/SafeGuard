@@ -1,83 +1,26 @@
-<div class="container-fluid vh-100">
-  <div class="row h-100">
-    <!-- Sidebar -->
-    <nav
-      class="col-12 col-md-3 col-lg-2 d-md-block bg-primary sidebar py-4 border-end h-100"
-    >
-      <div class="mb-4 text-center fw-bold fs-4 text-white">SafeGuard</div>
-      <ul class="nav flex-column">
-        <li class="nav-item">
-          <a
-            class="nav-link text-white"
-            routerLink="/dashboard"
-            routerLinkActive="active"
-            >Dashboard</a
-          >
-        </li>
-        <li class="nav-item">
-          <a
-            class="nav-link text-white"
-            routerLink="/users"
-            routerLinkActive="active"
-            >Users</a
-          >
-        </li>
-        <li class="nav-item">
-          <a
-            class="nav-link text-white"
-            routerLink="/alerts"
-            routerLinkActive="active"
-            >Alerts</a
-          >
-        </li>
-        <li class="nav-item">
-          <a
-            class="nav-link text-white"
-            routerLink="/reports"
-            routerLinkActive="active"
-            >Reports</a
-          >
-        </li>
-        <li class="nav-item">
-          <a
-            class="nav-link text-white"
-            routerLink="/settings"
-            routerLinkActive="active"
-            >Settings</a
-          >
-        </li>
-      </ul>
-    </nav>
-    <!-- Main Content -->
-    <main class="col px-4 d-flex flex-column h-100">
-      <header
-        class="d-flex justify-content-between align-items-center py-3 border-bottom"
-      >
-        <span class="fs-5 fw-semibold text-primary">Dashboard</span>
-        <div>
-          <a href="#" class="me-3 text-decoration-none text-primary">Profile</a>
-          <a href="#" class="text-decoration-none text-danger">Logout</a>
-        </div>
-      </header>
-      <main class="p-4 bg-light h-100">
-        <router-outlet></router-outlet>
-      </main>
-      <footer
-        class="mt-auto py-3 text-center border-top text-secondary bg-white"
-      >
-        &copy; 2025 SafeGuard Platform
-      </footer>
-    </main>
+
+<div class="row g-3 mb-3">
+  <div class="col-md-3" *ngFor="let kpi of kpis">
+    <div class="p-3 kpi-card text-center">
+      <div class="text-muted small">{{kpi.label}}</div>
+      <div class="h4 fw-bold" [ngClass]="kpi.color">{{kpi.value}}</div>
+      <div class="small text-muted">{{kpi.desc}}</div>
+    </div>
   </div>
 </div>
 
-<script>
-  // Sidebar toggle script
-  document.addEventListener("DOMContentLoaded", function () {
-    const menuToggle = document.getElementById("menu-toggle");
-    const wrapper = document.getElementById("wrapper");
-    menuToggle?.addEventListener("click", function () {
-      wrapper.classList.toggle("toggled");
-    });
-  });
-</script>
+<div class="row g-3">
+  <div class="col-lg-7">
+    <div class="p-3 kpi-card text-center">
+      <h2 class="h6">AI Event Type Distribution</h2>
+      <canvas id="casePie" style="max-height:260px"></canvas>
+    </div>
+  </div>
+
+  <div class="col-lg-5">
+    <div class="p-3 kpi-card">
+      <h2 class="h6 mb-2">Recent Event Timeline</h2>
+      <div id="timelineList" class="timeline list-group"></div>
+    </div>
+  </div>
+</div>

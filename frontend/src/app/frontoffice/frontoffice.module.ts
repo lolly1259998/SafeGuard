@@ -3,12 +3,11 @@ import { CommonModule } from '@angular/common';
 
 import { FrontofficeRoutingModule } from './frontoffice-routing.module';
 
-
 @NgModule({
   declarations: [],
   imports: [
     CommonModule,
-    FrontofficeRoutingModule
+    FrontofficeRoutingModule,
   ]
 })
 export class FrontofficeModule { }
