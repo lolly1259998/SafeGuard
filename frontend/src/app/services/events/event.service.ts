@@ -34,4 +34,9 @@ export class EventService {
   deleteEvent(id: number): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}${id}/`);
   }
+  // Ajouter un nouvel événement
+ createEvent(eventData: any): Observable<any> {
+    return this.http.post(this.apiUrl, eventData);
+  }
+
 }
