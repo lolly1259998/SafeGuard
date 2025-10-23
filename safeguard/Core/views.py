@@ -1,6 +1,38 @@
-from django.shortcuts import render
-from django.views import View
+from rest_framework import viewsets
+from django.contrib.auth.models import User
+from rest_framework import viewsets, serializers
 
-class DashboardView(View):
-    def get(self, request):
-        return render(request, 'dashboard.html')
+from .models import Camera, ControlCenter, CameraUserAccess, ControlCenterUserAccess
+from .serializers import (
+    CameraSerializer,
+    ControlCenterSerializer,
+    CameraUserAccessSerializer,
+    ControlCenterUserAccessSerializer
+)
+
+class CameraViewSet(viewsets.ModelViewSet):
+    queryset = Camera.objects.all()
+    serializer_class = CameraSerializer
+
+class ControlCenterViewSet(viewsets.ModelViewSet):
+    queryset = ControlCenter.objects.all()
+    serializer_class = ControlCenterSerializer
+
+class CameraUserAccessViewSet(viewsets.ModelViewSet):
+    queryset = CameraUserAccess.objects.all()
+    serializer_class = CameraUserAccessSerializer
+
+class ControlCenterUserAccessViewSet(viewsets.ModelViewSet):
+    queryset = ControlCenterUserAccess.objects.all()
+    serializer_class = ControlCenterUserAccessSerializer
+
+    # === USERS ===
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['id', 'username', 'email']
+
+class UserViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+

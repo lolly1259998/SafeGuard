@@ -41,3 +41,8 @@ cd safeguard/
 py manage.py runserver
 
 # safeguard/Core/MOdels
+
+
+routes backoffice:
+http://localhost:4200/backoffice/control-center-access
+http://localhost:4200/backoffice/camera-access

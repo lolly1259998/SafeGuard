@@ -1,0 +1,95 @@
+<div class="backoffice-container">
+  <h2 class="page-title">🎥 Gestion des accès aux caméras</h2>
+
+  <!-- Formulaire d'ajout -->
+  <form (ngSubmit)="add()" class="access-form">
+    <div class="form-group">
+      <label>Utilisateur</label>
+      <select [(ngModel)]="newAccess.user" name="user" required>
+        <option [ngValue]="null">-- Sélectionner --</option>
+        <option *ngFor="let u of users" [value]="u.id">{{ u.username }}</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label>Caméra</label>
+      <select [(ngModel)]="newAccess.camera" name="camera" required>
+        <option [ngValue]="null">-- Sélectionner --</option>
+        <option *ngFor="let c of cameras" [value]="c.id">{{ c.name }}</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label>Permission</label>
+      <select [(ngModel)]="newAccess.permission" name="permission" required>
+        <option value="view_live">Visionner</option>
+        <option value="view_history">Historique</option>
+        <option value="manage_alerts">Gérer alertes</option>
+        <option value="full_control">Contrôle total</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label>Expiration</label>
+      <input type="datetime-local" [(ngModel)]="newAccess.expires_at" name="expires_at" />
+    </div>
+
+    <div class="form-actions">
+      <button type="submit" class="btn btn-primary">➕ Ajouter</button>
+    </div>
+  </form>
+
+  <hr class="divider" />
+
+  <!-- Tableau des accès -->
+  <div class="table-wrapper">
+    <table class="access-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Utilisateur</th>
+          <th>Caméra</th>
+          <th>Permission</th>
+          <th>Expiration</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr *ngFor="let a of accesses">
+          <td>{{ a.id }}</td>
+          <td>{{ a.user_username || a.user }}</td>
+          <td>{{ a.camera_name || a.camera }}</td>
+          <td>
+            <span *ngIf="!editing || editing.id !== a.id" class="tag">
+              {{ a.permission }}
+            </span>
+
+            <select *ngIf="editing?.id === a.id"
+                    [(ngModel)]="editing!.permission"
+                    name="edit_permission"
+                    class="edit-select">
+              <option value="view_live">Visionner</option>
+              <option value="view_history">Historique</option>
+              <option value="manage_alerts">Gérer alertes</option>
+              <option value="full_control">Contrôle total</option>
+            </select>
+          </td>
+          <td>{{ a.expires_at | date: 'short' }}</td>
+          <td>
+            <button *ngIf="!editing || editing.id !== a.id"
+                    (click)="startEdit(a)"
+                    class="btn btn-warning">✏️ Modifier</button>
+
+            <button *ngIf="editing?.id === a.id"
+                    (click)="saveEdit()"
+                    class="btn btn-success">💾 Enregistrer</button>
+
+            <button (click)="delete(a.id)"
+                    class="btn btn-danger">🗑️ Supprimer</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

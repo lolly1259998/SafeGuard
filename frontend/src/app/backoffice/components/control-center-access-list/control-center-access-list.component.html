@@ -1,0 +1,125 @@
+<div class="access-container">
+  <!-- Header -->
+  <div class="header">
+    <h1>🏢 Gestion des accès</h1>
+    <p>Gérez les permissions utilisateurs pour chaque centre de contrôle</p>
+  </div>
+
+  <!-- Formulaire -->
+  <div class="card form-card">
+    <h2>➕ Ajouter un nouvel accès</h2>
+    <form (ngSubmit)="add()" class="access-form">
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Utilisateur</label>
+          <select [(ngModel)]="newAccess.user" name="user" required>
+            <option [ngValue]="null">-- Sélectionner --</option>
+            <option *ngFor="let u of users" [value]="u.id">{{ u.username }}</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Centre de contrôle</label>
+          <select [(ngModel)]="newAccess.control_center" name="control_center" required>
+            <option [ngValue]="null">-- Sélectionner --</option>
+            <option *ngFor="let c of centers" [value]="c.id">{{ c.name }}</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Niveau d’accès</label>
+          <select [(ngModel)]="newAccess.access_level" name="access_level" required>
+            <option value="view_only">👁️ Visualisation seule</option>
+            <option value="operator">⚙️ Opérateur</option>
+            <option value="admin">🛡️ Administrateur</option>
+          </select>
+        </div>
+
+        <div class="form-group checkbox-group">
+          <label>
+            <input type="checkbox" [(ngModel)]="newAccess.is_active" name="is_active" />
+            <span>Actif</span>
+          </label>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary">Ajouter</button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Table -->
+  <div class="card table-card">
+    <h2>📋 Liste des accès existants</h2>
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Utilisateur</th>
+            <th>Centre</th>
+            <th>Niveau</th>
+            <th>Statut</th>
+            <th class="actions-col">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let a of accesses">
+            <td>{{ a.id }}</td>
+
+            <!-- Utilisateur -->
+            <td *ngIf="editing?.id !== a.id">{{ a.user_username || a.user }}</td>
+            <td *ngIf="editing?.id === a.id">
+              <select [(ngModel)]="editing!.user" name="edit_user">
+                <option *ngFor="let u of users" [value]="u.id">{{ u.username }}</option>
+              </select>
+            </td>
+
+            <!-- Centre -->
+            <td *ngIf="editing?.id !== a.id">{{ a.control_center_name || a.control_center }}</td>
+            <td *ngIf="editing?.id === a.id">
+              <select [(ngModel)]="editing!.control_center" name="edit_control_center">
+                <option *ngFor="let c of centers" [value]="c.id">{{ c.name }}</option>
+              </select>
+            </td>
+
+            <!-- Niveau -->
+            <td *ngIf="editing?.id !== a.id">
+              <span class="badge"
+                [ngClass]="{
+                  'badge-view': a.access_level === 'view_only',
+                  'badge-operator': a.access_level === 'operator',
+                  'badge-admin': a.access_level === 'admin'
+                }">
+                {{ a.access_level === 'view_only' ? 'Visualisation' :
+                   a.access_level === 'operator' ? 'Opérateur' : 'Admin' }}
+              </span>
+            </td>
+            <td *ngIf="editing?.id === a.id">
+              <select [(ngModel)]="editing!.access_level" name="edit_access_level">
+                <option value="view_only">Visualisation</option>
+                <option value="operator">Opérateur</option>
+                <option value="admin">Administrateur</option>
+              </select>
+            </td>
+
+            <!-- Statut -->
+            <td>
+              <span [class.active]="a.is_active" [class.inactive]="!a.is_active">
+                {{ a.is_active ? '✅ Actif' : '❌ Inactif' }}
+              </span>
+            </td>
+
+            <!-- Actions -->
+            <td class="actions">
+              <button *ngIf="editing?.id !== a.id" (click)="startEdit(a)" class="btn btn-warning">✏️</button>
+              <button *ngIf="editing?.id === a.id" (click)="saveEdit()" class="btn btn-success">💾</button>
+              <button (click)="delete(a.id)" class="btn btn-danger">🗑️</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
