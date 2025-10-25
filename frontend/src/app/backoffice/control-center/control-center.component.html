@@ -2,11 +2,11 @@
   <div class="d-flex justify-content-between align-items-center mb-3">
     <h2 class="primary-color p-2 rounded">Control Centers</h2>
     <button class="btn btn-success btn-lg" (click)="showAddForm = !showAddForm">
-      Ajouter
+      Add
     </button>
   </div>
 
-  <!-- Formulaire d'ajout / édition -->
+  <!-- Add / Edit Form -->
   <div *ngIf="showAddForm" class="mb-4 p-3 border rounded bg-light">
     <form (ngSubmit)="addOrUpdateCenter()" #centerForm="ngForm">
       <div class="row mb-2">
@@ -14,7 +14,7 @@
           <input
             type="text"
             class="form-control"
-            placeholder="Nom"
+            placeholder="Name"
             [(ngModel)]="newCenter.name"
             name="name"
             required
@@ -24,7 +24,7 @@
           <input
             type="text"
             class="form-control"
-            placeholder="Localisation"
+            placeholder="Location"
             [(ngModel)]="newCenter.location"
             name="location"
           />
@@ -57,24 +57,24 @@
           [(ngModel)]="newCenter.is_active"
           name="is_active"
         />
-        <label class="form-check-label">Actif</label>
+        <label class="form-check-label">Active</label>
       </div>
       <button type="submit" class="btn btn-primary btn-lg">
-        {{ editing ? "Mettre à jour" : "Ajouter" }}
+        {{ editing ? "Update" : "Add" }}
       </button>
     </form>
   </div>
 
-  <!-- Tableau des Control Centers -->
+  <!-- Control Centers Table -->
   <table class="table table-striped table-bordered">
     <thead class="primary-color">
       <tr>
-        <th>Nom</th>
-        <th>Localisation</th>
+        <th>Name</th>
+        <th>Location</th>
         <th>Description</th>
         <th>Owner</th>
-        <th>Actif</th>
-        <th>Créé le</th>
+        <th>Active</th>
+        <th>Created At</th>
         <th>Actions</th>
       </tr>
     </thead>
@@ -84,7 +84,7 @@
         <td>{{ cc.location }}</td>
         <td>{{ cc.description }}</td>
         <td>{{ cc.owner }}</td>
-        <td>{{ cc.is_active ? "Oui" : "Non" }}</td>
+        <td>{{ cc.is_active ? "Yes" : "No" }}</td>
         <td>{{ cc.created_at | date : "short" }}</td>
         <td>
           <button
