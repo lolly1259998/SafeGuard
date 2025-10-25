@@ -5,6 +5,7 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { ControlCenterComponent } from './control-center/control-center.component';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
+import { AiPerformanceDashboardComponent } from './control-center/ai-performance-dashboard/ai-performance-dashboard.component';
 
 @NgModule({
   declarations: [],
@@ -15,6 +16,7 @@ import { HttpClientModule } from '@angular/common/http';
     DashboardComponent,
     ControlCenterComponent,
     HttpClientModule,
+    AiPerformanceDashboardComponent,
   ],
 })
 export class BackofficeModule {}

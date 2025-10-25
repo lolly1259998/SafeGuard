@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { DashboardComponent } from './dashboard/dashboard.component';
-import { ControlCenterComponent } from './control-center/control-center.component';
+import { AiPerformanceDashboardComponent } from './control-center/ai-performance-dashboard/ai-performance-dashboard.component';
 const routes: Routes = [
   {
     // /dashboard
@@ -20,6 +20,11 @@ const routes: Routes = [
           import('./control-center/control-center.component').then(
             (m) => m.ControlCenterComponent
           ),
+      },
+      // AJOUTER CETTE NOUVELLE ROUTE
+      {
+        path: 'ai-control-centers',
+        component: AiPerformanceDashboardComponent,
       },
     ],
   },

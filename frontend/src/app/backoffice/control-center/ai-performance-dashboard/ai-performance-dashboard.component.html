@@ -1,0 +1,64 @@
+<div class="ai-performance-dashboard">
+  <!-- En-tête avec sélecteur dynamique -->
+  <div class="dashboard-header mb-4">
+    <div class="d-flex justify-content-between align-items-center">
+      <h4>🧠 Tableau de Bord IA - Control Centers</h4>
+      <div class="d-flex gap-3 align-items-center">
+        <!-- Sélecteur dynamique des centres -->
+        <div class="form-group mb-0">
+          <select
+            class="form-select"
+            (change)="onControlCenterChange($event)"
+            [disabled]="isloadingCenters || isLoading"
+          >
+            <option value="">Sélectionner un centre</option>
+            <option
+              *ngFor="let center of controlCenters"
+              [value]="center.id"
+              [selected]="center.id === selectedControlCenter?.id"
+            >
+              {{ center.name }} ({{ center.location }}) - {{ center.status }}
+            </option>
+          </select>
+        </div>
+
+        <button
+          class="btn btn-sm btn-outline-primary"
+          (click)="loadPerformanceAnalysis()"
+          [disabled]="isLoading || !selectedControlCenter"
+        >
+          🔄 Actualiser
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading State pour les centres -->
+  <div *ngIf="isloadingCenters" class="loading-state">
+    <div class="spinner-border text-primary" role="status"></div>
+    <p>Chargement des centres de contrôle...</p>
+  </div>
+
+  <!-- Message si aucun centre disponible -->
+  <div
+    *ngIf="!isloadingCenters && controlCenters.length === 0"
+    class="alert alert-warning text-center"
+  >
+    <p>Aucun centre de contrôle disponible</p>
+  </div>
+
+  <!-- Message si aucun centre sélectionné -->
+  <div
+    *ngIf="
+      !isloadingCenters && controlCenters.length > 0 && !selectedControlCenter
+    "
+    class="alert alert-info text-center"
+  >
+    <p>
+      Veuillez sélectionner un centre de contrôle pour afficher l'analyse IA
+    </p>
+  </div>
+
+  <!-- Le reste du template reste identique -->
+  <!-- ... -->
+</div>
