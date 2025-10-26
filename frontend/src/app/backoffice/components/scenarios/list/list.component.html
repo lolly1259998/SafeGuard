@@ -1,0 +1,133 @@
+<div class="container my-4">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h2 class="primary-color p-2 rounded">Gestion des Scénarios de Sécurité</h2>
+    <button class="btn btn-success btn-lg" (click)="showAddForm = !showAddForm">
+      {{ editing ? "Update" : "Add" }}
+    </button>
+  </div>
+
+  <!-- Add / Edit Form (inline) -->
+  <div *ngIf="showAddForm" class="mb-4 p-3 border rounded bg-light">
+    <form (ngSubmit)="addOrUpdateScenario()" #scenarioForm="ngForm">
+      <div class="row mb-2">
+        <div class="col">
+          <label class="form-label">Nom</label>
+          <input
+            type="text"
+            class="form-control"
+            placeholder="Name"
+            [(ngModel)]="editForm.name"
+            name="name"
+            required
+          />
+        </div>
+        <div class="col">
+          <label class="form-label">Priorité</label>
+          <select class="form-control" [(ngModel)]="editForm.priority" name="priority">
+            <option value="low">Faible</option>
+            <option value="medium">Moyenne</option>
+            <option value="high">Haute</option>
+            <option value="critical">Critique</option>
+          </select>
+        </div>
+      </div>
+      <div class="row mb-2">
+        <div class="col">
+          <label class="form-label">Types d'événement</label>
+          <select multiple class="form-control" [(ngModel)]="editForm.event_types" name="event_types">
+            <option value="motion">Mouvement</option>
+            <option value="unknown_face">Visage inconnu</option>
+            <option value="suspicious_object">Objet suspect</option>
+            <option value="intrusion">Intrusion</option>
+          </select>
+        </div>
+        <div class="col">
+          <label class="form-label">Heure début</label>
+          <input type="time" class="form-control" [(ngModel)]="editForm.start_time" name="start_time">
+        </div>
+      </div>
+      <div class="row mb-2">
+        <div class="col">
+          <label class="form-label">Heure fin</label>
+          <input type="time" class="form-control" [(ngModel)]="editForm.end_time" name="end_time">
+        </div>
+        <div class="col">
+          <label class="form-label">Jours de la semaine</label>
+          <select multiple class="form-control" [(ngModel)]="editForm.days_of_week" name="days_of_week">
+            <option value="0">Dimanche</option>
+            <option value="1">Lundi</option>
+            <option value="2">Mardi</option>
+            <option value="3">Mercredi</option>
+            <option value="4">Jeudi</option>
+            <option value="5">Vendredi</option>
+            <option value="6">Samedi</option>
+          </select>
+        </div>
+      </div>
+      <div class="row mb-2">
+        <div class="col">
+          <div class="form-check">
+            <input type="checkbox" class="form-check-input" [(ngModel)]="editForm.alert_email" name="alert_email">
+            <label class="form-check-label">Alerte email</label>
+          </div>
+        </div>
+        <div class="col">
+          <div class="form-check">
+            <input type="checkbox" class="form-check-input" [(ngModel)]="editForm.alert_sms" name="alert_sms">
+            <label class="form-check-label">Alerte SMS</label>
+          </div>
+        </div>
+      </div>
+      <div class="row mb-2">
+        <div class="col">
+          <div class="form-check">
+            <input type="checkbox" class="form-check-input" [(ngModel)]="editForm.save_recording" name="save_recording">
+            <label class="form-check-label">Enregistrer vidéo</label>
+          </div>
+        </div>
+        <div class="col">
+          <div class="form-check">
+            <input type="checkbox" class="form-check-input" [(ngModel)]="editForm.is_active" name="is_active">
+            <label class="form-check-label">Actif</label>
+          </div>
+        </div>
+      </div>
+      <div class="form-check mb-2">
+        <input type="checkbox" class="form-check-input" [(ngModel)]="editForm.is_manual" name="is_manual">
+        <label class="form-check-label">Manuel (sinon auto)</label>
+      </div>
+      <button type="submit" class="btn btn-primary btn-lg" [disabled]="!scenarioForm.form.valid">
+        {{ editing ? "Update" : "Add" }}
+      </button>
+    </form>
+  </div>
+
+  <!-- Table -->
+  <table class="table table-striped table-bordered">
+    <thead class="primary-color">
+      <tr>
+        <th>Nom</th>
+        <th>Utilisateur</th>
+        <th>Priorité</th>
+        <th>Aperçu</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let scenario of scenarios">
+        <td>{{ scenario.name }}</td>
+        <td>{{ scenario.user_name }}</td>
+        <td>{{ scenario.priority }}</td>
+        <td>{{ scenario.preview }}</td>
+        <td>
+          <button class="btn btn-primary btn-action me-2" (click)="editScenario(scenario)">
+            <i class="bi bi-pencil-fill"></i> Edit
+          </button>
+          <button class="btn btn-danger btn-action" (click)="deleteScenario(scenario.id)">
+            <i class="bi bi-trash-fill"></i> Delete
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

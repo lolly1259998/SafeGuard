@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { RouterModule } from '@angular/router';
 import { BackofficeRoutingModule } from './backoffice-routing.module';
+import { ListComponent } from './components/scenarios/list/list.component';
 
 
 @NgModule({
@@ -11,6 +12,7 @@ import { BackofficeRoutingModule } from './backoffice-routing.module';
     HttpClientModule,
     BackofficeRoutingModule,
     RouterModule,
+    ListComponent
 
   ],
 })

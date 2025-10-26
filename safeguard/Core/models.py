@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.core.validators import MinValueValidator, MaxValueValidator
+from django.core.exceptions import ValidationError
 
 # ========================
 # 1. Utilisateurs
@@ -99,10 +100,10 @@ class SecurityScenario(models.Model):
     control_center = models.ForeignKey(ControlCenter, null=True, blank=True, on_delete=models.SET_NULL)
     
     # Conditions
-    event_types = models.JSONField(default=list)  # ex: ["motion", "unknown_face"]
+    event_types = models.JSONField(default=list, blank=True, null=True)  # FIXED: Use 'list' for serializable default
     start_time = models.TimeField(null=True, blank=True)
     end_time = models.TimeField(null=True, blank=True)
-    days_of_week = models.JSONField(default=list)  # [0=dim, 1=lun, ..., 6=sam]
+    days_of_week = models.JSONField(default=list, blank=True, null=True)  # FIXED: Use 'list' for serializable default
     
     # Actions
     alert_email = models.BooleanField(default=False)
@@ -112,10 +113,34 @@ class SecurityScenario(models.Model):
     
     # Activation
     is_active = models.BooleanField(default=False)
-    is_manual = models.BooleanField(default=True)  # si False → activation auto selon horaire
+    is_manual = models.BooleanField(default=True)  # False → auto-activation horaire
     
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = "Scénario de sécurité"
+        verbose_name_plural = "Scénarios de sécurité"
+        ordering = ['name']
+
+    def clean(self):
+        # Validation simple : start_time < end_time si définis
+        if self.start_time and self.end_time and self.start_time >= self.end_time:
+            raise ValidationError("L'heure de début doit être antérieure à l'heure de fin.")
+
+    def get_preview(self):
+        """Preview pour listes : Cible | Events | Prio | Statut"""
+        if self.apply_to_all_cameras:
+            target = "Toutes les caméras"
+        elif self.control_center:
+            target = f"Centre: {self.control_center.name}"
+        else:
+            cam_names = [c.name for c in self.cameras.all()[:3]]
+            target = f"Caméras: {', '.join(cam_names)}" + ("..." if len(cam_names) < self.cameras.count() else "")
+        
+        events_str = ", ".join(self.event_types[:2]) if self.event_types else "Tous"
+        status = "Actif" if self.is_active else "Inactif"
+        return f"{target} | Événements: {events_str} | {self.get_priority_display()} | {status}"
 
     def __str__(self):
         return f"{self.name} ({self.user.username})"

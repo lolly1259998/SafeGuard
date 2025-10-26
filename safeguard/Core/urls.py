@@ -5,7 +5,8 @@ from .views import (
     CameraViewSet,
     ControlCenterViewSet,
     CameraUserAccessViewSet,
-    ControlCenterUserAccessViewSet
+    ControlCenterUserAccessViewSet,
+    SecurityScenarioViewSet
 )
 
 router = DefaultRouter()
@@ -14,6 +15,7 @@ router.register('cameras', CameraViewSet)
 router.register('controlcenters', ControlCenterViewSet)
 router.register('cameraaccess', CameraUserAccessViewSet)
 router.register('centeraccess', ControlCenterUserAccessViewSet)
+router.register('securityscenarios', SecurityScenarioViewSet)
 
 urlpatterns = [
     path('api/', include(router.urls)),
