@@ -1,0 +1,162 @@
+<app-navbar></app-navbar>
+
+<div class="container my-5">
+  <h2 class="text-center fw-bold text-primary mb-5">
+    <i class="bi bi-calendar-event me-2"></i> Event Dashboard
+  </h2>
+
+  <!-- Loader -->
+  <div *ngIf="loading" class="text-center text-secondary mt-4">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+    <p class="mt-2">Fetching events...</p>
+  </div>
+
+  <!-- Error -->
+  <div *ngIf="error" class="alert alert-danger text-center mt-3">
+    {{ error }}
+  </div>
+
+  <!-- No events -->
+  <div *ngIf="!loading && events.length === 0" class="text-center text-muted mt-4">
+    <i class="bi bi-exclamation-circle fs-3"></i>
+    <p class="mt-2">No events found.</p>
+  </div>
+
+  <!-- Event Cards -->
+  <div *ngIf="!loading && events.length > 0" class="row g-4">
+    <div class="col-md-4" *ngFor="let event of events">
+      <div class="card border-0 shadow-sm rounded-4 h-100">
+        <div class="card-body">
+          <!-- Camera + Type -->
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <h5 class="fw-bold text-primary mb-0">
+              <i class="bi bi-camera-video me-2 text-secondary"></i>
+              Camera #{{ event.camera }}
+            </h5>
+            <span class="badge rounded-pill bg-info bg-opacity-25 text-info px-3 py-2">
+              {{ event.event_type }}
+            </span>
+          </div>
+
+          <!-- Confidence -->
+          <div class="mb-1">
+  <strong>Confidence:</strong>
+  <div class="progress" style="height: 8px;">
+    <div
+      class="progress-bar"
+      role="progressbar"
+      [ngClass]="{
+        'bg-danger': event.confidence_score < 0.4,
+        'bg-warning': event.confidence_score >= 0.4 && event.confidence_score < 0.75,
+        'bg-success': event.confidence_score >= 0.75
+      }"
+      [style.width.%]="event.confidence_score * 100"
+    ></div>
+  </div>
+  <small
+    [ngClass]="{
+      'text-danger': event.confidence_score < 0.4,
+      'text-warning': event.confidence_score >= 0.4 && event.confidence_score < 0.75,
+      'text-success': event.confidence_score >= 0.75
+    }"
+  >
+    {{ event.confidence_score | percent: '1.0-1' }}
+  </small>
+</div>
+
+
+          <!-- Date -->
+          <p class="mb-1">
+            <strong>Date:</strong> {{ event.timestamp | date:'short' }}
+          </p>
+
+          <!-- Metadata -->
+          <p class="mb-1">
+            <strong>Metadata:</strong>
+            <code class="text-muted">
+              {{ event.metadata | json }}
+            </code>
+          </p>
+
+          <!-- Processed By -->
+          <p class="mb-1">
+            <strong>Processed By:</strong>
+            <span *ngIf="event.processed_by; else noUser" class="text-success fw-semibold">
+              {{ event.processed_by }}
+            </span>
+            <ng-template #noUser><span class="text-muted">—</span></ng-template>
+          </p>
+
+          <!-- Notes -->
+          <p class="mb-2">
+            <strong>Notes:</strong> {{ event.notes || '—' }}
+          </p>
+
+          <!-- Status -->
+          <div class="d-flex justify-content-between align-items-center mt-3">
+            <span
+              class="fw-semibold"
+              [ngClass]="{
+                'text-success': event.is_processed,
+                'text-warning': !event.is_processed
+              }"
+            >
+              <i
+                class="bi"
+                [ngClass]="{
+                  'bi-check-circle-fill': event.is_processed,
+                  'bi-clock-history': !event.is_processed
+                }"
+              ></i>
+              {{ event.is_processed ? 'Processed' : 'Pending' }}
+            </span>
+
+            <div>
+            <button
+  class="btn btn-outline-primary btn-sm me-2"
+  (click)="openDetails(event, detailsModal)">
+  <i class="bi bi-eye"></i> Details
+</button>
+
+
+              <button
+                class="btn btn-outline-danger btn-sm"
+                (click)="deleteEvent(event.id)"
+              >
+                <i class="bi bi-trash"></i> Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ✅ MODAL DETAILS -->
+<ng-template #detailsModal let-modal>
+  <div class="modal-header">
+    <h5 class="modal-title text-primary fw-bold">
+      <i class="bi bi-info-circle me-2"></i> Event Details
+    </h5>
+    <button type="button" class="btn-close" (click)="modal.dismiss()"></button>
+  </div>
+
+  <div class="modal-body">
+    <p><strong>ID:</strong> {{ selectedEvent?.id }}</p>
+    <p><strong>Camera:</strong> {{ selectedEvent?.camera }}</p>
+    <p><strong>Type:</strong> {{ selectedEvent?.event_type }}</p>
+    <p><strong>Date:</strong> {{ selectedEvent?.timestamp | date:'medium' }}</p>
+    <p><strong>Confidence:</strong> {{ selectedEvent?.confidence_score | percent:'1.0-1' }}</p>
+    <p><strong>Metadata:</strong></p>
+    <pre class="bg-light p-2 rounded">{{ selectedEvent?.metadata | json }}</pre>
+    <p><strong>Processed By:</strong> {{ selectedEvent?.processed_by || '—' }}</p>
+    <p><strong>Notes:</strong> {{ selectedEvent?.notes || '—' }}</p>
+  </div>
+
+  <div class="modal-footer">
+    <button class="btn btn-outline-secondary" (click)="modal.dismiss()">Close</button>
+  </div>
+</ng-template>

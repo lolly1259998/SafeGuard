@@ -7,7 +7,6 @@ import { CommonModule } from '@angular/common';
   selector: 'app-dashboard',
   standalone: true,
   imports: [
-    RouterOutlet,
     CommonModule
 ],
   templateUrl: './dashboard.component.html',
