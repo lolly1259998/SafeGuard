@@ -1,0 +1,62 @@
+.ai-performance-dashboard {
+  background-color: #f9fafb;
+  padding: 0.5rem;
+  border-radius: 0.75rem;
+}
+
+.card {
+  border: 1px solid #dee2e6;
+  border-radius: 1rem;
+  margin-bottom: 1rem;
+}
+
+h4 {
+  font-weight: bold;
+  color: #1a73e8;
+  margin-bottom: 0.5rem;
+}
+
+h5, h6 {
+  margin-bottom: 0.5rem;
+}
+
+.badge {
+  font-size: 1rem;
+  padding: 0.5em 0.75em;
+}
+
+.spinner-border {
+  width: 2rem;
+  height: 2rem;
+}
+
+ul {
+  margin-bottom: 0.5rem;
+}
+
+li {
+  margin-bottom: 0.25rem;
+}
+
+canvas {
+  max-height: 250px;
+  width: 100% !important;
+  margin-top: 0.5rem;
+}
+
+.recos-section, .insights-section {
+  max-height: 200px;
+  overflow-y: auto;
+  border: 1px solid #e9ecef;
+  border-radius: 0.25rem;
+  padding: 0.5rem;
+}
+
+.accordion-btn {
+  background: none;
+  border: none;
+  text-align: left;
+  width: 100%;
+  padding: 0.5rem;
+  cursor: pointer;
+}

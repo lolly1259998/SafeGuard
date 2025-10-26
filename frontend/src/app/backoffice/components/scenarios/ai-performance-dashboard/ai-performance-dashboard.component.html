@@ -1,0 +1,140 @@
+<div class="ai-performance-dashboard">
+  <!-- En-tête avec sélecteur dynamique + BACK BUTTON -->
+  <div class="dashboard-header mb-2">
+    <div class="d-flex justify-content-between align-items-center">
+      <h4>🧠 Tableau de Bord IA - Scénarios de Sécurité</h4>
+      <div class="d-flex gap-2 align-items-center">
+        <div class="form-group mb-0">
+          <select
+            class="form-select form-select-sm"
+            (change)="onScenarioChange($event)"
+            [disabled]="isloadingScenarios || isLoading"
+          >
+            <option value="">Sélectionner un scénario</option>
+            <option
+              *ngFor="let scenario of scenarios"
+              [value]="scenario.id"
+              [selected]="scenario.id === selectedScenario?.id"
+            >
+              {{ scenario.name }} ({{ scenario.user_name }}) - {{ scenario.is_active ? 'Actif' : 'Inactif' }}
+            </option>
+          </select>
+        </div>
+
+        <button
+          class="btn btn-sm btn-outline-primary"
+          (click)="loadPerformanceAnalysis()"
+          [disabled]="isLoading || !selectedScenario"
+        >
+          🔄 Actualiser
+        </button>
+       <button class="btn btn-secondary btn-sm ms-2" (click)="goBack()">← Retour</button>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading -->
+  <div *ngIf="isloadingScenarios" class="text-center my-2">
+    <div class="spinner-border text-primary"></div>
+    <p class="mb-0">Chargement des scénarios...</p>
+  </div>
+
+  <!-- Aucun scénario -->
+  <div
+    *ngIf="!isloadingScenarios && scenarios.length === 0"
+    class="alert alert-warning text-center mb-2"
+  >
+    Aucun scénario disponible.
+  </div>
+
+  <!-- Aucun scénario sélectionné -->
+  <div
+    *ngIf="!isloadingScenarios && scenarios.length > 0 && !selectedScenario"
+    class="alert alert-info text-center mb-2"
+  >
+    Sélectionnez un scénario pour afficher son analyse IA.
+  </div>
+
+  <!-- Affichage des données + CHART -->
+  <div *ngIf="performanceData && selectedScenario" class="card p-2 shadow-sm">
+    <h5 class="mb-1">📊 Analyse du scénario : {{ selectedScenario.name }}</h5>
+    <hr class="my-1" />
+
+    <p class="mb-1">
+      <strong>Performance Score :</strong>
+      <span
+        class="badge"
+        [ngClass]="
+          'bg-' + getPerformanceColor(performanceData.performance_score)
+        "
+      >
+        {{ performanceData.performance_score }}%
+      </span>
+    </p>
+
+    <p class="mb-2">
+      <strong>Niveau de Risque :</strong>
+      <span
+        class="badge"
+        [ngClass]="'bg-' + getRiskLevelColor(performanceData.risk_level)"
+      >
+        {{ performanceData.risk_level }}
+      </span>
+    </p>
+
+    <div class="mt-1">
+      <h6 class="mb-1">📈 Détails :</h6>
+      <ul class="mb-1">
+        <li class="mb-0">
+          <strong>Couverture Événements :</strong>
+          {{ performanceData.performance_data?.event_coverage?.score }}%
+        </li>
+        <li class="mb-0">
+          <strong>Configuration Conditions :</strong>
+          {{ performanceData.performance_data?.condition_setup?.score }}%
+        </li>
+        <li class="mb-0">
+          <strong>Prêteté Actions :</strong>
+          {{ performanceData.performance_data?.action_readiness?.score }}%
+        </li>
+      </ul>
+    </div>
+
+    <!-- Bar Chart -->
+    <div class="mt-2">
+      <h6 class="mb-1">📊 Visualisation des Scores</h6>
+      <div style="height: 250px;">
+        <canvas baseChart
+          [data]="barChartData"
+          [options]="barChartOptions"
+          [type]="barChartType">
+        </canvas>
+      </div>
+    </div>
+
+    <div class="mt-2 recos-section">
+      <h6 class="mb-1">💡 Recommandations :</h6>
+      <ul>
+        <li *ngFor="let rec of performanceData.recommendations">
+          {{ rec.title }} — {{ rec.description }}
+        </li>
+      </ul>
+    </div>
+
+    <div class="mt-1 insights-section">
+      <h6 class="mb-1">🤖 Insights IA :</h6>
+      <ul>
+        <li *ngFor="let insight of performanceData.ai_insights">
+          {{ insight }}
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Loading IA -->
+  <div *ngIf="isLoading" class="text-center my-2">
+    <div class="spinner-border text-primary"></div>
+    <p class="mb-0">Analyse IA en cours...</p>
+  </div>
+</div>

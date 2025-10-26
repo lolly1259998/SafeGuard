@@ -1,13 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';  // FIXED: For ngModel/ngForm
+import { FormsModule } from '@angular/forms';
+import { RouterModule } from '@angular/router';  // Ajout pour routerLink et queryParams
 import { ScenarioService } from '../scenario.service';
 import { SecurityScenario } from '../types';
 
 @Component({
   selector: 'app-list',
   standalone: true,
-  imports: [CommonModule, FormsModule],  // FIXED: FormsModule only (no FormComponent, inline form)
+  imports: [CommonModule, FormsModule, RouterModule],  // Ajout RouterModule ici
   templateUrl: './list.component.html',
   styleUrl: './list.component.css'
 })
@@ -15,7 +16,7 @@ export class ListComponent implements OnInit {
   scenarios: SecurityScenario[] = [];
   showAddForm = false;
   editing = false;
-  editForm: Partial<SecurityScenario> = {  // FIXED: Partial with defaults for nulls
+  editForm: Partial<SecurityScenario> = {
     name: '',
     priority: 'medium',
     event_types: [],
@@ -48,7 +49,7 @@ export class ListComponent implements OnInit {
   }
 
   addOrUpdateScenario() {
-    if (!this.editForm.name) {  // FIXED: Check required name
+    if (!this.editForm.name) {
       alert('Name is required!');
       return;
     }
@@ -70,7 +71,7 @@ export class ListComponent implements OnInit {
   }
 
   editScenario(scenario: SecurityScenario) {
-    this.editForm = { ...scenario,  // FIXED: Spread with defaults for nulls
+    this.editForm = { ...scenario,
       start_time: scenario.start_time || '',
       end_time: scenario.end_time || ''
     };
