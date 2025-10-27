@@ -46,3 +46,9 @@ py manage.py runserver
 routes backoffice:
 http://localhost:4200/backoffice/control-center-access
 http://localhost:4200/backoffice/camera-access
+
+
+
+For IA Dashboard Feature (Chart.js Visualizations):
+
+npm install chart.js ng2-charts --legacy-peer-deps
