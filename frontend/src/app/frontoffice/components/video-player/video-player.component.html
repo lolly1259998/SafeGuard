@@ -1,0 +1,17 @@
+<div class="container py-4">
+  <a routerLink="/cameras" class="text-decoration-none">← Retour à la liste</a>
+
+  <h3 class="mt-2" *ngIf="camera">Lecture: {{ camera.name }}</h3>
+
+  <div *ngIf="error" class="alert alert-danger mt-3">{{ error }}</div>
+  <div *ngIf="loading" class="text-muted">Chargement...</div>
+
+  <div class="ratio ratio-16x9 mt-3" *ngIf="!loading">
+    <video #videoEl controls autoplay muted playsinline class="w-100" crossorigin="anonymous"></video>
+  </div>
+
+  <div class="mt-3 text-muted" *ngIf="camera">
+    <div><strong>Emplacement:</strong> {{ camera.location || '—' }}</div>
+    <div><strong>Flux:</strong> <code>{{ camera.stream_url }}</code></div>
+  </div>
+</div>

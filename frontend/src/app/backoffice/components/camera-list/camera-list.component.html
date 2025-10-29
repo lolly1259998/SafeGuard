@@ -1,0 +1,89 @@
+<div class="container py-3">
+  <h3>Gestion des Caméras</h3>
+
+  <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
+
+  <!-- Filtres -->
+  <div class="row g-2 mb-3">
+    <div class="col-md-6">
+      <input class="form-control" type="text" placeholder="Rechercher (nom, emplacement, flux)" [(ngModel)]="filterText" />
+    </div>
+    <div class="col-md-3">
+      <select class="form-select" [(ngModel)]="filterStatus">
+        <option value="">Tous les statuts</option>
+        <option value="online">En ligne</option>
+        <option value="offline">Hors ligne</option>
+        <option value="maintenance">Maintenance</option>
+      </select>
+    </div>
+  </div>
+
+  <form [formGroup]="form" (ngSubmit)="submit()" class="row g-2 align-items-end">
+    <div class="col-md-3">
+      <label class="form-label">Nom</label>
+      <input type="text" class="form-control" formControlName="name" />
+    </div>
+    <div class="col-md-3">
+      <label class="form-label">Emplacement</label>
+      <input type="text" class="form-control" formControlName="location" />
+    </div>
+    <div class="col-md-3">
+      <label class="form-label">Flux (RTSP/HTTP)</label>
+      <input type="text" class="form-control" formControlName="stream_url" />
+    </div>
+    <div class="col-md-2">
+      <label class="form-label">Statut</label>
+      <select class="form-select" formControlName="status">
+        <option value="online">En ligne</option>
+        <option value="offline">Hors ligne</option>
+        <option value="maintenance">Maintenance</option>
+      </select>
+    </div>
+    <div class="col-md-1 d-grid">
+      <button class="btn btn-primary" type="submit">
+        {{ editingId ? 'Mettre à jour' : 'Ajouter' }}
+      </button>
+    </div>
+    <div class="col-md-12" *ngIf="editingId">
+      <button class="btn btn-secondary btn-sm" type="button" (click)="cancelEdit()">Annuler l'édition</button>
+    </div>
+  </form>
+
+  <hr />
+
+  <div *ngIf="loading">Chargement...</div>
+
+  <div class="table-responsive" *ngIf="!loading">
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>Nom</th>
+          <th>Emplacement</th>
+          <th>Flux</th>
+          <th>Statut</th>
+          <th>Créé</th>
+          <th style="width: 150px;">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let cam of filteredCameras">
+          <td>{{ cam.name }}</td>
+          <td>{{ cam.location }}</td>
+          <td><code>{{ cam.stream_url }}</code></td>
+          <td>
+            <span class="badge" [ngClass]="{
+              'bg-success': cam.status === 'online',
+              'bg-secondary': cam.status === 'offline',
+              'bg-warning text-dark': cam.status === 'maintenance'
+            }">{{ cam.status }}</span>
+          </td>
+          <td>{{ cam.created_at | date:'short' }}</td>
+          <td>
+            <button class="btn btn-sm btn-outline-primary me-2" (click)="edit(cam)">Éditer</button>
+            <button class="btn btn-sm btn-outline-danger" (click)="delete(cam)">Supprimer</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

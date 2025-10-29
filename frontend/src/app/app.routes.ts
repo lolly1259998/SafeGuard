@@ -15,8 +15,8 @@ export const routes: Routes = [
   {
     path: 'backoffice',
     loadChildren: () =>
-      import('./backoffice/backoffice-routing.module').then(
-        (m) => m.BackofficeRoutingModule
+      import('./backoffice/backoffice.module').then(
+        (m) => m.BackofficeModule
       ),
   },
 

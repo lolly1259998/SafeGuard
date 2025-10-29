@@ -15,7 +15,10 @@
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav ms-auto">
         <li class="nav-item">
-          <a class="nav-link text-primary" href="#">Accueil</a>
+          <a class="nav-link text-primary" routerLink="/">Accueil</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-primary" routerLink="/cameras">Caméras</a>
         </li>
         <li class="nav-item">
           <a class="nav-link text-primary" href="#">Fonctionnalités</a>
@@ -34,7 +37,11 @@
   </div>
 </nav>
 
+<!-- Zone d'injection des routes enfants (ex: /cameras) -->
+<router-outlet></router-outlet>
+
 <div
+  *ngIf="showHomeContent"
   class="container d-flex flex-column justify-content-center align-items-center min-vh-100"
 >
   <div class="text-center mb-5">
@@ -43,7 +50,7 @@
       Protecting your data, empowering your business.<br />
       Discover secure, reliable, and easy-to-use solutions.
     </p>
-    <a href="#" class="btn btn-primary btn-lg px-5">Get Started</a>
+    <a routerLink="/cameras" class="btn btn-primary btn-lg px-5">Voir les caméras</a>
   </div>
   <div class="row w-100 justify-content-center mb-5">
     <div class="col-md-4 mb-3">

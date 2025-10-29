@@ -14,6 +14,20 @@ class CameraViewSet(viewsets.ModelViewSet):
     queryset = Camera.objects.all()
     serializer_class = CameraSerializer
 
+    def perform_create(self, serializer):
+        user = getattr(self.request, 'user', None)
+        if user and user.is_authenticated:
+            serializer.save(owner=user)
+        else:
+            serializer.save()
+
+    def perform_update(self, serializer):
+        user = getattr(self.request, 'user', None)
+        if user and user.is_authenticated:
+            serializer.save(owner=user)
+        else:
+            serializer.save()
+
 class ControlCenterViewSet(viewsets.ModelViewSet):
     queryset = ControlCenter.objects.all()
     serializer_class = ControlCenterSerializer
