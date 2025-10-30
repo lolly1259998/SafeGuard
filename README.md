@@ -49,3 +49,5 @@ http://localhost:4200/backoffice/camera-access
 
 
 http://localhost:8000/api/ai/model-info/
+http://localhost:4200/front/my-cameras-access
+http://localhost:4200/front/my-centers-access
