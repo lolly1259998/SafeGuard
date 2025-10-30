@@ -10,6 +10,7 @@ class CameraSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
@@ -23,12 +24,10 @@ class EventSerializer(serializers.ModelSerializer):
 
 
 class ControlCenterSerializer(serializers.ModelSerializer):
-    owner = serializers.PrimaryKeyRelatedField(read_only=True)
 
     class Meta:
         model = ControlCenter
         fields = '__all__'
-
 
 class CameraUserAccessSerializer(serializers.ModelSerializer):
     user_name = serializers.CharField(source='user.username', read_only=True)
@@ -37,7 +36,6 @@ class CameraUserAccessSerializer(serializers.ModelSerializer):
     class Meta:
         model = CameraUserAccess
         fields = '__all__'
-
 
 class ControlCenterUserAccessSerializer(serializers.ModelSerializer):
     user_name = serializers.CharField(source='user.username', read_only=True)

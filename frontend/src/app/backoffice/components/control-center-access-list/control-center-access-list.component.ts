@@ -28,20 +28,32 @@ export class ControlCenterAccessListComponent implements OnInit {
   constructor(private accessService: AccessService) {}
 
   ngOnInit(): void {
-    this.reload();
-    this.accessService.getControlCenters().subscribe({
-      next: c => (this.centers = c),
-      error: e => console.error('Erreur chargement centres', e)
-    });
+    // Charger les utilisateurs et centres d'abord, ensuite les accès
     this.accessService.getUsers().subscribe({
-      next: u => (this.users = u),
+      next: u => {
+        this.users = u;
+        this.accessService.getControlCenters().subscribe({
+          next: c => {
+            this.centers = c;
+            this.reload(); // maintenant qu'on a les données, on peut charger les accès
+          },
+          error: e => console.error('Erreur chargement centres', e)
+        });
+      },
       error: e => console.error('Erreur chargement users', e)
     });
   }
 
   reload(): void {
     this.accessService.getControlCenterAccess().subscribe({
-      next: data => (this.accesses = data),
+      next: data => {
+        // enrichir les accès avec les noms d'utilisateur et de centre
+        this.accesses = data.map(a => ({
+          ...a,
+          user_username: this.users.find(u => u.id === a.user)?.username ?? '—',
+          control_center_name: this.centers.find(c => c.id === a.control_center)?.name ?? '—'
+        }));
+      },
       error: e => console.error('Erreur chargement accès', e)
     });
   }
@@ -54,7 +66,13 @@ export class ControlCenterAccessListComponent implements OnInit {
 
     this.accessService.addControlCenterAccess(this.newAccess).subscribe({
       next: res => {
-        this.accesses.push(res);
+        const user = this.users.find(u => u.id === res.user);
+        const center = this.centers.find(c => c.id === res.control_center);
+        this.accesses.push({
+          ...res,
+          user_username: user?.username,
+          control_center_name: center?.name
+        });
         this.newAccess = {
           access_level: 'view_only',
           is_active: true,
@@ -74,7 +92,15 @@ export class ControlCenterAccessListComponent implements OnInit {
     this.accessService.updateControlCenterAccess(this.editing.id, this.editing).subscribe({
       next: res => {
         const i = this.accesses.findIndex(x => x.id === res.id);
-        if (i > -1) this.accesses[i] = res;
+        if (i > -1) {
+          const user = this.users.find(u => u.id === res.user);
+          const center = this.centers.find(c => c.id === res.control_center);
+          this.accesses[i] = {
+            ...res,
+            user_username: user?.username,
+            control_center_name: center?.name
+          };
+        }
         this.editing = null;
       },
       error: err => console.error('Erreur mise à jour', err)
@@ -85,7 +111,7 @@ export class ControlCenterAccessListComponent implements OnInit {
     if (!id) return;
     if (!confirm('Confirmer la suppression ?')) return;
     this.accessService.deleteControlCenterAccess(id).subscribe({
-      next: () => this.accesses = this.accesses.filter(a => a.id !== id),
+      next: () => (this.accesses = this.accesses.filter(a => a.id !== id)),
       error: err => console.error('Erreur suppression', err)
     });
   }

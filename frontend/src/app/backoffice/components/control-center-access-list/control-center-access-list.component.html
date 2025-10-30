@@ -1,66 +1,66 @@
 <div class="access-container">
   <!-- Header -->
   <div class="header">
-    <h1>🏢 Gestion des accès</h1>
-    <p>Gérez les permissions utilisateurs pour chaque centre de contrôle</p>
+    <h1>🏢 Access Management</h1>
+    <p>Manage user permissions for each control center</p>
   </div>
 
-  <!-- Formulaire -->
+  <!-- Form -->
   <div class="card form-card">
-    <h2>➕ Ajouter un nouvel accès</h2>
+    <h2>➕ Add New Access</h2>
     <form (ngSubmit)="add()" class="access-form">
       <div class="form-grid">
         <div class="form-group">
-          <label>Utilisateur</label>
+          <label>User</label>
           <select [(ngModel)]="newAccess.user" name="user" required>
-            <option [ngValue]="null">-- Sélectionner --</option>
+            <option [ngValue]="null">-- Select --</option>
             <option *ngFor="let u of users" [value]="u.id">{{ u.username }}</option>
           </select>
         </div>
 
         <div class="form-group">
-          <label>Centre de contrôle</label>
+          <label>Control Center</label>
           <select [(ngModel)]="newAccess.control_center" name="control_center" required>
-            <option [ngValue]="null">-- Sélectionner --</option>
+            <option [ngValue]="null">-- Select --</option>
             <option *ngFor="let c of centers" [value]="c.id">{{ c.name }}</option>
           </select>
         </div>
 
         <div class="form-group">
-          <label>Niveau d’accès</label>
+          <label>Access Level</label>
           <select [(ngModel)]="newAccess.access_level" name="access_level" required>
-            <option value="view_only">👁️ Visualisation seule</option>
-            <option value="operator">⚙️ Opérateur</option>
-            <option value="admin">🛡️ Administrateur</option>
+            <option value="view_only">👁️ View Only</option>
+            <option value="operator">⚙️ Operator</option>
+            <option value="admin">🛡️ Administrator</option>
           </select>
         </div>
 
         <div class="form-group checkbox-group">
           <label>
             <input type="checkbox" [(ngModel)]="newAccess.is_active" name="is_active" />
-            <span>Actif</span>
+            <span>Active</span>
           </label>
         </div>
       </div>
 
       <div class="form-actions">
-        <button type="submit" class="btn btn-primary">Ajouter</button>
+        <button type="submit" class="btn btn-primary">Add</button>
       </div>
     </form>
   </div>
 
   <!-- Table -->
   <div class="card table-card">
-    <h2>📋 Liste des accès existants</h2>
+    <h2>📋 Existing Access List</h2>
     <div class="table-container">
       <table>
         <thead>
           <tr>
             <th>ID</th>
-            <th>Utilisateur</th>
-            <th>Centre</th>
-            <th>Niveau</th>
-            <th>Statut</th>
+            <th>User</th>
+            <th>Center</th>
+            <th>Level</th>
+            <th>Status</th>
             <th class="actions-col">Actions</th>
           </tr>
         </thead>
@@ -68,7 +68,7 @@
           <tr *ngFor="let a of accesses">
             <td>{{ a.id }}</td>
 
-            <!-- Utilisateur -->
+            <!-- User -->
             <td *ngIf="editing?.id !== a.id">{{ a.user_username || a.user }}</td>
             <td *ngIf="editing?.id === a.id">
               <select [(ngModel)]="editing!.user" name="edit_user">
@@ -76,7 +76,7 @@
               </select>
             </td>
 
-            <!-- Centre -->
+            <!-- Center -->
             <td *ngIf="editing?.id !== a.id">{{ a.control_center_name || a.control_center }}</td>
             <td *ngIf="editing?.id === a.id">
               <select [(ngModel)]="editing!.control_center" name="edit_control_center">
@@ -84,7 +84,7 @@
               </select>
             </td>
 
-            <!-- Niveau -->
+            <!-- Level -->
             <td *ngIf="editing?.id !== a.id">
               <span class="badge"
                 [ngClass]="{
@@ -92,22 +92,22 @@
                   'badge-operator': a.access_level === 'operator',
                   'badge-admin': a.access_level === 'admin'
                 }">
-                {{ a.access_level === 'view_only' ? 'Visualisation' :
-                   a.access_level === 'operator' ? 'Opérateur' : 'Admin' }}
+                {{ a.access_level === 'view_only' ? 'View Only' :
+                   a.access_level === 'operator' ? 'Operator' : 'Administrator' }}
               </span>
             </td>
             <td *ngIf="editing?.id === a.id">
               <select [(ngModel)]="editing!.access_level" name="edit_access_level">
-                <option value="view_only">Visualisation</option>
-                <option value="operator">Opérateur</option>
-                <option value="admin">Administrateur</option>
+                <option value="view_only">View Only</option>
+                <option value="operator">Operator</option>
+                <option value="admin">Administrator</option>
               </select>
             </td>
 
-            <!-- Statut -->
+            <!-- Status -->
             <td>
               <span [class.active]="a.is_active" [class.inactive]="!a.is_active">
-                {{ a.is_active ? '✅ Actif' : '❌ Inactif' }}
+                {{ a.is_active ? '✅ Active' : '❌ Inactive' }}
               </span>
             </td>
 

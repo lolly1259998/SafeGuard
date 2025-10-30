@@ -11,6 +11,7 @@ import { ControlCenterComponent } from './control-center/control-center.componen
 const routes: Routes = [
   {
     path: '',
+
     component: LayoutComponent,
     children: [
       {
@@ -27,7 +28,10 @@ const routes: Routes = [
       { path: 'ai-control-centers', component: AiPerformanceDashboardComponent },
 
       // Redirection par défaut
+      { path: 'camera-access', component: CameraAccessListComponent },
+      { path: 'control-center-access', component: ControlCenterAccessListComponent },
       { path: '', redirectTo: 'cameras', pathMatch: 'full' },
+
     ]
 
   },

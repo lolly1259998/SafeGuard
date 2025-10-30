@@ -1,14 +1,22 @@
+// src/app/frontoffice/main/main.component.ts
 import { Component } from '@angular/core';
-import { NavbarComponent } from '../navbar/navbar.component';
-
+import { RouterLink, RouterLinkActive, RouterOutlet ,RouterModule, Router, NavigationEnd} from '@angular/router'; // ← AJOUTÉ
 import { CommonModule } from '@angular/common';
-import { RouterModule, Router, NavigationEnd } from '@angular/router';
+import { NavbarComponent } from '../navbar/navbar.component';
 import { filter } from 'rxjs/operators';
+
+
+
 
 @Component({
   selector: 'app-main',
   standalone: true,
-  imports: [CommonModule, RouterModule,RouterModule,NavbarComponent],
+
+  imports: [CommonModule,
+     RouterModule,
+     NavbarComponent,
+  
+    ],
   templateUrl: './main.component.html',
   styleUrls: ['./main.component.css']
 })

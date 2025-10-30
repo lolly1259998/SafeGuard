@@ -1,95 +1,242 @@
 <div class="backoffice-container">
-  <h2 class="page-title">🎥 Gestion des accès aux caméras</h2>
-
-  <!-- Formulaire d'ajout -->
-  <form (ngSubmit)="add()" class="access-form">
-    <div class="form-group">
-      <label>Utilisateur</label>
-      <select [(ngModel)]="newAccess.user" name="user" required>
-        <option [ngValue]="null">-- Sélectionner --</option>
-        <option *ngFor="let u of users" [value]="u.id">{{ u.username }}</option>
-      </select>
+  <!-- === AI PANEL === -->
+  <div class="ai-panel" *ngIf="showAIPanel">
+    <div class="ai-header">
+      <h3><span class="icon">🤖</span> AI Access Analysis</h3>
+      <div class="ai-actions">
+        <button class="btn btn-primary" (click)="analyzeAllAccess()">
+          <span class="icon">🔍</span> Analyze All Accesses
+        </button>
+        <button class="btn btn-secondary" (click)="trainModel()" [disabled]="isTraining">
+          <span class="icon">⚙️</span> {{ isTraining ? 'Training...' : 'Train Model' }}
+        </button>
+      </div>
     </div>
-
-    <div class="form-group">
-      <label>Caméra</label>
-      <select [(ngModel)]="newAccess.camera" name="camera" required>
-        <option [ngValue]="null">-- Sélectionner --</option>
-        <option *ngFor="let c of cameras" [value]="c.id">{{ c.name }}</option>
-      </select>
-    </div>
-
-    <div class="form-group">
-      <label>Permission</label>
-      <select [(ngModel)]="newAccess.permission" name="permission" required>
-        <option value="view_live">Visionner</option>
-        <option value="view_history">Historique</option>
-        <option value="manage_alerts">Gérer alertes</option>
-        <option value="full_control">Contrôle total</option>
-      </select>
-    </div>
-
-    <div class="form-group">
-      <label>Expiration</label>
-      <input type="datetime-local" [(ngModel)]="newAccess.expires_at" name="expires_at" />
-    </div>
-
-    <div class="form-actions">
-      <button type="submit" class="btn btn-primary">➕ Ajouter</button>
-    </div>
-  </form>
-
-  <hr class="divider" />
-
-  <!-- Tableau des accès -->
-  <div class="table-wrapper">
-    <table class="access-table">
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th>Utilisateur</th>
-          <th>Caméra</th>
-          <th>Permission</th>
-          <th>Expiration</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-
-      <tbody>
-        <tr *ngFor="let a of accesses">
-          <td>{{ a.id }}</td>
-          <td>{{ a.user_username || a.user }}</td>
-          <td>{{ a.camera_name || a.camera }}</td>
-          <td>
-            <span *ngIf="!editing || editing.id !== a.id" class="tag">
-              {{ a.permission }}
+    
+    <div class="model-info" *ngIf="modelInfo">
+      <div class="info-card">
+        <h4><span class="icon">📊</span> Model Status</h4>
+        <div class="info-grid">
+          <div class="info-item">
+            <span class="info-label">Status:</span>
+            <span [class]="modelInfo.status === 'trained' ? 'status-trained' : 'status-not-trained'">
+              <span class="icon">{{ modelInfo.status === 'trained' ? '✅' : '❌' }}</span>
+              {{ modelInfo.status === 'trained' ? 'Trained' : 'Not Trained' }}
             </span>
+          </div>
+          <div class="info-item" *ngIf="modelInfo.accuracy">
+            <span class="info-label">Accuracy:</span>
+            <span class="info-value">{{ modelInfo.accuracy }}</span>
+          </div>
+          <div class="info-item" *ngIf="modelInfo.trained_samples">
+            <span class="info-label">Training Samples:</span>
+            <span class="info-value">{{ modelInfo.trained_samples }}</span>
+          </div>
+        </div>
+        <div *ngIf="modelInfo.message" class="error-message">{{ modelInfo.message }}</div>
+      </div>
+    </div>
+  </div>
 
-            <select *ngIf="editing?.id === a.id"
-                    [(ngModel)]="editing!.permission"
-                    name="edit_permission"
-                    class="edit-select">
-              <option value="view_live">Visionner</option>
-              <option value="view_history">Historique</option>
-              <option value="manage_alerts">Gérer alertes</option>
-              <option value="full_control">Contrôle total</option>
-            </select>
-          </td>
-          <td>{{ a.expires_at | date: 'short' }}</td>
-          <td>
-            <button *ngIf="!editing || editing.id !== a.id"
-                    (click)="startEdit(a)"
-                    class="btn btn-warning">✏️ Modifier</button>
+  <!-- === AI TOGGLE BUTTON === -->
+  <div class="ai-toggle-section">
+    <button class="btn btn-outline" (click)="toggleAIPanel()">
+      <span class="icon">{{ showAIPanel ? '⬆️' : '⬇️' }}</span> 
+      {{ showAIPanel ? 'Hide AI Panel' : 'Show AI Analysis' }}
+    </button>
+  </div>
 
-            <button *ngIf="editing?.id === a.id"
-                    (click)="saveEdit()"
-                    class="btn btn-success">💾 Enregistrer</button>
+  <div class="page-header">
+    <h2><span class="icon">📷</span> Camera Access Management</h2>
+    <p class="page-subtitle">Manage user permissions and access controls</p>
+  </div>
 
-            <button (click)="delete(a.id)"
-                    class="btn btn-danger">🗑️ Supprimer</button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+  <!-- === ADD ACCESS FORM === -->
+  <div class="form-section">
+    <h3><span class="icon">➕</span> Add New Access</h3>
+    <form (ngSubmit)="add()" class="access-form">
+      <div class="form-group">
+        <label><span class="icon">👤</span> User</label>
+        <select [(ngModel)]="newAccess.user" name="user" required class="form-control">
+          <option [ngValue]="undefined">Select User</option>
+          <option *ngFor="let u of users" [value]="u.id">{{ u.username }}</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label><span class="icon">🎥</span> Camera</label>
+        <select [(ngModel)]="newAccess.camera" name="camera" required class="form-control">
+          <option [ngValue]="undefined">Select Camera</option>
+          <option *ngFor="let c of cameras" [value]="c.id">{{ c.name }}</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label><span class="icon">🔐</span> Permission Level</label>
+        <select [(ngModel)]="newAccess.permission" name="permission" required class="form-control">
+          <option value="view_live">Live View</option>
+          <option value="view_history">View History</option>
+          <option value="manage_alerts">Manage Alerts</option>
+          <option value="full_control">Full Control</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label><span class="icon">⏰</span> Expiration Date</label>
+        <input type="datetime-local" [(ngModel)]="newAccess.expires_at" name="expires_at" class="form-control" />
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary">
+          <span class="icon">➕</span> Add Access
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- === ACCESS TABLE === -->
+  <div class="table-section">
+    <h3><span class="icon">📋</span> Access List</h3>
+    <div class="table-wrapper">
+      <table class="access-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th><span class="icon">👤</span> User</th>
+            <th><span class="icon">🎥</span> Camera</th>
+            <th><span class="icon">🔐</span> Permission</th>
+            <th><span class="icon">⏰</span> Expiration</th>
+            <th><span class="icon">⚡</span> Actions</th>
+            <!-- AI COLUMN -->
+            <th *ngIf="showAIPanel"><span class="icon">🤖</span> AI Analysis</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let a of accesses" class="table-row">
+            <td class="table-cell">{{ a.id }}</td>
+
+            <!-- User -->
+            <td class="table-cell">
+              <span *ngIf="!editing || editing.id !== a.id" class="user-info">{{ a.user_username }}</span>
+              <select *ngIf="editing?.id === a.id"
+                      [(ngModel)]="editing!.user"
+                      name="edit_user"
+                      class="form-control edit-select">
+                <option *ngFor="let u of users" [value]="u.id">{{ u.username }}</option>
+              </select>
+            </td>
+
+            <!-- Camera -->
+            <td class="table-cell">
+              <span *ngIf="!editing || editing.id !== a.id" class="camera-info">{{ a.camera_name }}</span>
+              <select *ngIf="editing?.id === a.id"
+                      [(ngModel)]="editing!.camera"
+                      name="edit_camera"
+                      class="form-control edit-select">
+                <option *ngFor="let c of cameras" [value]="c.id">{{ c.name }}</option>
+              </select>
+            </td>
+
+            <!-- Permission -->
+            <td class="table-cell">
+              <span *ngIf="!editing || editing.id !== a.id" class="permission-tag" [class]="'permission-' + a.permission">
+                {{ a.permission }}
+              </span>
+              <select *ngIf="editing?.id === a.id"
+                      [(ngModel)]="editing!.permission"
+                      name="edit_permission"
+                      class="form-control edit-select">
+                <option value="view_live">Live View</option>
+                <option value="view_history">View History</option>
+                <option value="manage_alerts">Manage Alerts</option>
+                <option value="full_control">Full Control</option>
+              </select>
+            </td>
+
+            <!-- Expiration -->
+            <td class="table-cell">
+              <span *ngIf="!editing || editing.id !== a.id" class="expiration-date">{{ a.expires_at | date: 'short' }}</span>
+              <input *ngIf="editing?.id === a.id"
+                    type="datetime-local"
+                    [(ngModel)]="editing!.expires_at"
+                    name="edit_expires_at"
+                    class="form-control" />
+            </td>
+
+            <!-- Actions CRUD -->
+            <td class="table-cell actions-cell">
+              <div class="action-buttons">
+                <button *ngIf="!editing || editing.id !== a.id"
+                        (click)="startEdit(a)"
+                        class="btn btn-warning btn-sm">
+                  <span class="icon">✏️</span> Edit
+                </button>
+
+                <button *ngIf="editing?.id === a.id"
+                        (click)="saveEdit()"
+                        class="btn btn-success btn-sm">
+                  <span class="icon">💾</span> Save
+                </button>
+
+                <button (click)="delete(a.id)"
+                        class="btn btn-danger btn-sm">
+                  <span class="icon">🗑️</span> Delete
+                </button>
+              </div>
+            </td>
+
+            <!-- === AI COLUMN === -->
+            <td *ngIf="showAIPanel" class="table-cell ai-cell">
+              <div class="ai-content">
+                <!-- Analyze Button -->
+                <button 
+                  class="btn btn-info btn-sm" 
+                  (click)="analyzeAccess(a.id!)"
+                  [disabled]="getAnalysis(a.id!)?.is_analyzing">
+                  <span class="icon">{{ getAnalysis(a.id!)?.is_analyzing ? '⏳' : '🔍' }}</span>
+                  {{ getAnalysis(a.id!)?.is_analyzing ? 'Analyzing...' : 'Analyze' }}
+                </button>
+
+                <!-- Analysis Result -->
+                <div *ngIf="hasAnalysis(a.id!) && getAnalysis(a.id!)?.prediction" 
+                    class="analysis-result">
+                  <div class="prediction-badge" [class]="getRiskClass(getAnalysis(a.id!)!.prediction!.risk_level)">
+                    <span class="risk-icon">{{ getRiskIcon(getAnalysis(a.id!)!.prediction!.risk_level) }}</span>
+                    <span class="risk-text">{{ getAnalysis(a.id!)!.prediction!.risk_level }}</span>
+                    <span class="confidence">({{ (getAnalysis(a.id!)!.prediction!.confidence * 100) | number:'1.0-0' }}%)</span>
+                  </div>
+                  
+                  <!-- Alert if suspicious -->
+                  <div *ngIf="getAnalysis(a.id!)!.prediction!.suspicious" class="suspect-alert">
+                    <span class="icon">⚠️</span> Suspicious Access Detected
+                  </div>
+
+                  <!-- Error Message -->
+                  <div *ngIf="getAnalysis(a.id!)!.prediction!.error" class="error-alert">
+                    <span class="icon">❌</span> {{ getAnalysis(a.id!)!.prediction!.error }}
+                  </div>
+                </div>
+
+                <!-- Hide Button -->
+                <button 
+                  *ngIf="hasAnalysis(a.id!)" 
+                  class="btn btn-outline btn-sm"
+                  (click)="removeAnalysis(a.id!)"
+                  title="Hide Analysis">
+                  <span class="icon">👁️</span> Hide
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Message if no accesses -->
+  <div *ngIf="accesses.length === 0" class="no-data">
+    <p><span class="icon">📭</span> No camera access found. Create the first access using the form above.</p>
   </div>
 </div>

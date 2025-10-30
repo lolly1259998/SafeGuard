@@ -8,7 +8,7 @@
       <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav ms-auto">
           <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="#">Home</a>
+            <a class="nav-link active" aria-current="page" href="/frontoffice/home">Home</a>
           </li>
           <li class="nav-item">
             <a class="nav-link" routerLink="/frontoffice/eventsFront" routerLinkActive="active" >Events</a>
@@ -20,7 +20,27 @@
           <a class="nav-link text-primary" routerLink="/frontoffice/control-centersFront">
             Control Center
           </a>
-        </li>
+        </li> 
+        <li class="nav-item">
+            <a
+              class="nav-link text-white"
+              routerLink="/frontoffice/my-cameras-access"
+              routerLinkActive="active"
+              [routerLinkActiveOptions]="{ exact: false }"
+            >
+              camera-access
+            </a>
+          </li>
+          <li class="nav-item">
+            <a
+              class="nav-link text-white"
+              routerLink="/frontoffice/my-centers-access"
+              routerLinkActive="active"
+              [routerLinkActiveOptions]="{ exact: false }"
+            >
+              control-center-access
+            </a>
+          </li>
         </ul>
       </div>
     </div>
