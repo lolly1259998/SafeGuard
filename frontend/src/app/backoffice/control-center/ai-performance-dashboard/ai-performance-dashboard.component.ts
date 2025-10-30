@@ -3,7 +3,7 @@ import { ControlCenterAIService } from '../control-center-ai.service';
 import { ControlCenterService } from '../control-center.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { HttpClient } from '@angular/common/http'; // AJOUTER HttpClient
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-ai-performance-dashboard',
@@ -17,32 +17,28 @@ export class AiPerformanceDashboardComponent implements OnInit {
   performanceData: any = null;
   isLoading: boolean = false;
   isloadingCenters: boolean = false;
-
   activeTab: string = 'overview';
 
   constructor(
     private aiService: ControlCenterAIService,
     private controlCenterService: ControlCenterService,
-    private http: HttpClient // AJOUTER HttpClient
+    private http: HttpClient
   ) {}
 
   ngOnInit() {
     this.loadControlCenters();
   }
 
-  // UTILISER LA BONNE MÉTHODE DE VOTRE SERVICE
   loadControlCenters() {
     this.isloadingCenters = true;
 
-    // Essayer différentes méthodes possibles de votre service
     const serviceCall =
-      (this.controlCenterService as any).getAll?.() || // Essaye getAll()
-      (this.controlCenterService as any).getControlCenters?.() || // Essaye getControlCenters()
-      this.http.get<any[]>('/api/controlcenters/'); // Fallback direct API
+      (this.controlCenterService as any).getAll?.() ||
+      (this.controlCenterService as any).getControlCenters?.() ||
+      this.http.get<any[]>('/api/controlcenters/');
 
     serviceCall.subscribe({
       next: (centers: any) => {
-        // Normaliser la réponse (peut être un tableau direct ou dans une propriété)
         const centersArray = centers?.results || centers || [];
 
         this.controlCenters = centersArray.map((center: any) => ({
@@ -58,7 +54,6 @@ export class AiPerformanceDashboardComponent implements OnInit {
 
         this.isloadingCenters = false;
 
-        // Sélectionner le premier centre par défaut
         if (this.controlCenters.length > 0) {
           this.selectedControlCenter = this.controlCenters[0];
           this.loadPerformanceAnalysis();
@@ -72,7 +67,6 @@ export class AiPerformanceDashboardComponent implements OnInit {
     });
   }
 
-  // Fallback si le service échoue
   private loadControlCentersFallback() {
     this.http.get<any[]>('/api/controlcenters/').subscribe({
       next: (centers: any[]) => {
@@ -121,7 +115,6 @@ export class AiPerformanceDashboardComponent implements OnInit {
         error: (error: any) => {
           console.error('Erreur analyse performance:', error);
           this.isLoading = false;
-          // Données simulées BASÉES SUR LE CENTRE SÉLECTIONNÉ
           this.performanceData = this.generateAIAnalysis(
             this.selectedControlCenter
           );
@@ -129,14 +122,24 @@ export class AiPerformanceDashboardComponent implements OnInit {
       });
   }
 
-  // GÉNÉRATION INTELLIGENTE BASÉE SUR LES DONNÉES RÉELLES DU CENTRE
   private generateAIAnalysis(center: any): any {
+    if (!center) {
+      return {
+        success: false,
+        performance_score: 0,
+        risk_level: 'HIGH',
+        center_analysis: {},
+        performance_data: {},
+        recommendations: [],
+        ai_insights: [],
+      };
+    }
+
     const ageInDays = Math.floor(
       (new Date().getTime() - new Date(center.created_at).getTime()) /
         (1000 * 3600 * 24)
     );
 
-    // ANALYSE INTELLIGENTE BASÉE SUR LES CARACTÉRISTIQUES DU CENTRE
     const analysis = {
       name_analysis: this.analyzeName(center.name),
       location_analysis: this.analyzeLocation(center.location),
@@ -207,7 +210,6 @@ export class AiPerformanceDashboardComponent implements OnInit {
     };
   }
 
-  // ANALYSE DU NOM
   private analyzeName(name: string): any {
     const analysis = {
       length: name.length,
@@ -235,7 +237,6 @@ export class AiPerformanceDashboardComponent implements OnInit {
     return analysis;
   }
 
-  // ANALYSE DE LA LOCALISATION
   private analyzeLocation(location: string): any {
     return {
       provided: !!location,
@@ -245,7 +246,6 @@ export class AiPerformanceDashboardComponent implements OnInit {
     };
   }
 
-  // ANALYSE DE LA DESCRIPTION
   private analyzeDescription(description: string): any {
     const analysis = {
       provided: !!description,
@@ -271,7 +271,6 @@ export class AiPerformanceDashboardComponent implements OnInit {
     return analysis;
   }
 
-  // ANALYSE DE L'ACTIVITÉ
   private analyzeActivity(isActive: boolean, ageInDays: number): any {
     return {
       status: isActive ? 'Actif' : 'Inactif',
@@ -284,12 +283,10 @@ export class AiPerformanceDashboardComponent implements OnInit {
     };
   }
 
-  // ANALYSE DE SÉCURITÉ
   private analyzeSecurity(center: any): any {
     const risks = [];
     const improvements = [];
 
-    // Détection des risques
     if (this.isGenericName(center.name)) {
       risks.push('Nom générique - peut révéler des informations');
     }
@@ -300,7 +297,6 @@ export class AiPerformanceDashboardComponent implements OnInit {
       risks.push('Description insuffisante pour l audit');
     }
 
-    // Suggestions d'amélioration
     if (risks.length > 0) {
       improvements.push('Utiliser des conventions de nommage sécurisées');
       improvements.push('Documenter complètement la configuration');
@@ -312,25 +308,21 @@ export class AiPerformanceDashboardComponent implements OnInit {
     return { risks, improvements };
   }
 
-  // CALCUL DES SCORES
   private calculateScores(analysis: any, ageInDays: number): any {
     let uptime = 70;
     let resources = 60;
     let security = 65;
     let naming = 70;
 
-    // Score uptime basé sur l'activité et l'âge
     if (analysis.activity_analysis.status === 'Actif') uptime += 20;
     if (ageInDays > 90) uptime += 10;
 
-    // Score ressources basé sur la complétude des informations
-    if (analysis.description_analysis.provided) resources += 20;
-    if (analysis.location_analysis.provided) resources += 10;
+    if (analysis.description_analysis.provided) resources += 30;
+    if (analysis.location_analysis.provided) resources += 20;
     if (analysis.description_analysis.length > 20) resources += 10;
 
-    // Score sécurité
     if (!analysis.security_analysis.risks.includes('Nom générique'))
-      security += 15;
+      security += 20;
     if (analysis.location_analysis.provided) security += 10;
     if (
       analysis.description_analysis.provided &&
@@ -338,8 +330,7 @@ export class AiPerformanceDashboardComponent implements OnInit {
     )
       security += 10;
 
-    // Score naming
-    if (!analysis.name_analysis.isGeneric) naming += 20;
+    if (!analysis.name_analysis.isGeneric) naming += 25;
     if (
       analysis.name_analysis.length >= 5 &&
       analysis.name_analysis.length <= 20
@@ -349,10 +340,28 @@ export class AiPerformanceDashboardComponent implements OnInit {
     const overall = Math.round(
       uptime * 0.3 + resources * 0.25 + security * 0.3 + naming * 0.15
     );
+
     const maintenanceUrgency = Math.min(
       100,
       Math.max(20, (ageInDays / 365) * 100)
     );
+
+    // ⚡ Correction des seuils de riskLevel
+    let riskLevel = 'HIGH';
+    if (overall >= 80) {
+      riskLevel = 'LOW';
+    } else if (overall >= 60) {
+      riskLevel = 'MEDIUM';
+    }
+
+    console.log('Scores intermédiaires:', {
+      uptime,
+      resources,
+      security,
+      naming,
+      overall,
+      riskLevel,
+    });
 
     return {
       overall: Math.min(100, overall),
@@ -361,11 +370,10 @@ export class AiPerformanceDashboardComponent implements OnInit {
       security: Math.min(100, security),
       naming: Math.min(100, naming),
       maintenanceUrgency: Math.min(100, maintenanceUrgency),
-      riskLevel: overall >= 80 ? 'LOW' : overall >= 60 ? 'MEDIUM' : 'HIGH',
+      riskLevel: riskLevel,
     };
   }
 
-  // GÉNÉRATION DE RECOMMANDATIONS INTELLIGENTES
   private generateSmartRecommendations(
     analysis: any,
     scores: any,
@@ -418,7 +426,6 @@ export class AiPerformanceDashboardComponent implements OnInit {
     return recommendations;
   }
 
-  // GÉNÉRATION D'INSIGHTS IA
   private generateAIInsights(
     center: any,
     analysis: any,
@@ -451,7 +458,6 @@ export class AiPerformanceDashboardComponent implements OnInit {
     return insights;
   }
 
-  // UTILITAIRES
   private isGenericName(name: string): boolean {
     const genericNames = [
       'test',
@@ -465,7 +471,6 @@ export class AiPerformanceDashboardComponent implements OnInit {
     return genericNames.some((generic) => name.toLowerCase().includes(generic));
   }
 
-  // MÉTHODES D'AFFICHAGE
   getPerformanceColor(score: number): string {
     if (score >= 80) return 'success';
     if (score >= 60) return 'warning';
