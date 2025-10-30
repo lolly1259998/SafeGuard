@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
-// ✅ Interface du modèle ControlCenter
 export interface ControlCenter {
   id: number;
   name: string;
@@ -17,7 +16,7 @@ export interface ControlCenter {
   providedIn: 'root',
 })
 export class ControlCenterService {
-  private apiUrl = 'http://127.0.0.1:8000/api/controlcenters/'; // ton endpoint Django REST
+  private apiUrl = 'http://127.0.0.1:8000/api/controlcenters/';
 
   constructor(private http: HttpClient) {}
 
