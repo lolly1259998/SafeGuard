@@ -32,6 +32,10 @@ http://127.0.0.1:8000/api/controlcenters/
 
 http://127.0.0.1:8000/api/controlcenters/1
 
+# backoffice admin django
+
+http://127.0.0.1:8000/admin/
+
 # django backend
 
 source twinenv/Scripts/activate
@@ -51,3 +55,6 @@ http://localhost:4200/backoffice/camera-access
 http://localhost:8000/api/ai/model-info/
 http://localhost:4200/front/my-cameras-access
 http://localhost:4200/front/my-centers-access
+routes backoffice:
+http://localhost:4200/backoffice/control-center-access
+http://localhost:4200/backoffice/camera-access

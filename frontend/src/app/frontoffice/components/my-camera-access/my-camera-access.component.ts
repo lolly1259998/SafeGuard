@@ -1,11 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FrontofficeAccessService, CameraAccess } from '../../services/frontoffice-access.service';
+import { NavbarComponent } from '../../navbar/navbar.component';
 
 @Component({
   selector: 'app-my-camera-access',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule,NavbarComponent],
   templateUrl: './my-camera-access.component.html'
 })
 export class MyCameraAccessComponent implements OnInit {

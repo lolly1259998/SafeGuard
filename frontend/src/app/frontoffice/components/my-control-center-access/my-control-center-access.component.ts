@@ -1,11 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FrontofficeAccessService, ControlCenterAccess } from '../../services/frontoffice-access.service';
+import { NavbarComponent } from '../../navbar/navbar.component';
 
 @Component({
   selector: 'app-my-control-center-access',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule,NavbarComponent],
   templateUrl: './my-control-center-access.component.html'
 })
 export class MyControlCenterAccessComponent implements OnInit {

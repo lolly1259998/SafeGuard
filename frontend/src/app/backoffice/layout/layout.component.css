@@ -1,0 +1,8 @@
+main {
+  background: linear-gradient(180deg, #f3f7f9, #eef4f8);
+  min-height: 100vh;
+}
+.main-header {
+  background: #ffffff;
+  box-shadow: 0 4px 18px rgba(15,23,42,0.06);
+}
