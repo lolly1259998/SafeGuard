@@ -1,0 +1,84 @@
+<!-- src/app/frontoffice/scenario-card/scenario-card.component.html -->
+<div class="card h-100 border-0 shadow-sm scenario-card">
+  <div class="card-body d-flex flex-column">
+    <!-- Scenario Header -->
+    <div class="d-flex justify-content-between align-items-start mb-2">
+      <h5 class="card-title fw-bold text-primary mb-0">{{ scenario.name }}</h5>
+      <span class="badge" [ngClass]="scenario.is_active ? 'bg-success' : 'bg-danger'">
+        {{ scenario.is_active ? 'Active' : 'Inactive' }}
+      </span>
+    </div>
+
+    <!-- Scenario Details -->
+    <div class="scenario-details">
+      <div class="detail-item mb-2">
+        <i class="bi bi-person me-2 text-muted"></i>
+        <span class="text-secondary">
+          <strong>Created by:</strong> {{ scenario.user_name || 'Unknown' }}
+        </span>
+      </div>
+
+      <div class="detail-item mb-2">
+        <i class="bi bi-flag me-2 text-muted"></i>
+        <span class="text-secondary">
+          <strong>Priority:</strong>
+          <span [ngClass]="{
+            'badge bg-danger': scenario.priority === 'critical',
+            'badge bg-warning text-dark': scenario.priority === 'high',
+            'badge bg-info': scenario.priority === 'medium',
+            'badge bg-secondary': scenario.priority === 'low'
+          }" class="ms-2">
+            {{ scenario.priority | titlecase }}
+          </span>
+        </span>
+      </div>
+
+      <!-- Days of Week -->
+      <div class="detail-item mb-2">
+        <i class="bi bi-calendar-week me-2 text-muted"></i>
+        <span class="text-secondary">
+          <strong>Days:</strong> 
+          <span class="small">{{ getDaysOfWeekText(scenario.days_of_week) }}</span>
+        </span>
+      </div>
+
+      <!-- Time Range -->
+      <div class="detail-item mb-2" *ngIf="scenario.start_time && scenario.end_time">
+        <i class="bi bi-clock me-2 text-muted"></i>
+        <span class="text-secondary">
+          <strong>Time:</strong> {{ formatTime(scenario.start_time) }} - {{ formatTime(scenario.end_time) }}
+        </span>
+      </div>
+
+      <!-- Event Types -->
+      <div class="detail-item mb-2" *ngIf="scenario.event_types && scenario.event_types.length > 0">
+        <i class="bi bi-bell me-2 text-muted"></i>
+        <span class="text-secondary">
+          <strong>Events:</strong> 
+          <span class="small">{{ scenario.event_types.join(', ') | titlecase }}</span>
+        </span>
+      </div>
+
+      <!-- Alert Settings -->
+      <div class="detail-item mb-3">
+        <i class="bi bi-megaphone me-2 text-muted"></i>
+        <span class="text-secondary small">
+          <strong>Alerts:</strong> 
+          {{ scenario.alert_email ? 'Email' : '' }}{{ scenario.alert_email && scenario.alert_sms ? ', ' : '' }}
+          {{ scenario.alert_sms ? 'SMS' : '' }}{{ !scenario.alert_email && !scenario.alert_sms ? 'None' : '' }}
+          {{ scenario.save_recording ? ' | Recordings' : '' }}
+        </span>
+      </div>
+    </div>
+
+    <!-- Action Button -->
+    <div class="mt-auto">
+      <a
+        [routerLink]="['/frontoffice/scenarios', scenario.id]"
+        class="btn btn-outline-primary btn-sm w-100 view-scenario-btn"
+      >
+        <i class="bi bi-eye me-2"></i>View Scenario
+      </a>
+    </div>
+  </div>
+</div>

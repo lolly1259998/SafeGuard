@@ -1,140 +1,209 @@
 <div class="ai-performance-dashboard">
-  <!-- En-tête avec sélecteur dynamique + BACK BUTTON -->
-  <div class="dashboard-header mb-2">
+  <!-- Header with Dynamic Selector + BACK BUTTON -->
+  <div class="dashboard-header mb-4">
     <div class="d-flex justify-content-between align-items-center">
-      <h4>🧠 Tableau de Bord IA - Scénarios de Sécurité</h4>
+      <div>
+        <h2 class="text-primary fw-bold mb-1">
+          <i class="bi bi-robot me-2"></i>AI Performance Dashboard
+        </h2>
+        <p class="text-muted mb-0">Security Scenarios Analysis & Insights</p>
+      </div>
       <div class="d-flex gap-2 align-items-center">
         <div class="form-group mb-0">
           <select
-            class="form-select form-select-sm"
+            class="form-select form-select-lg"
             (change)="onScenarioChange($event)"
             [disabled]="isloadingScenarios || isLoading"
           >
-            <option value="">Sélectionner un scénario</option>
+            <option value="">Select a scenario...</option>
             <option
               *ngFor="let scenario of scenarios"
               [value]="scenario.id"
               [selected]="scenario.id === selectedScenario?.id"
             >
-              {{ scenario.name }} ({{ scenario.user_name }}) - {{ scenario.is_active ? 'Actif' : 'Inactif' }}
+              {{ scenario.name }} ({{ scenario.user_name }}) - {{ scenario.is_active ? 'Active' : 'Inactive' }}
             </option>
           </select>
         </div>
 
         <button
-          class="btn btn-sm btn-outline-primary"
+          class="btn btn-primary btn-lg d-flex align-items-center"
           (click)="loadPerformanceAnalysis()"
           [disabled]="isLoading || !selectedScenario"
         >
-          🔄 Actualiser
+          <i class="bi bi-arrow-clockwise me-2"></i>
+          Refresh
         </button>
-       <button class="btn btn-secondary btn-sm ms-2" (click)="goBack()">← Retour</button>
-
+        <button class="btn btn-outline-secondary btn-lg d-flex align-items-center ms-2" (click)="goBack()">
+          <i class="bi bi-arrow-left me-2"></i>
+          Back
+        </button>
       </div>
     </div>
   </div>
 
-  <!-- Loading -->
-  <div *ngIf="isloadingScenarios" class="text-center my-2">
-    <div class="spinner-border text-primary"></div>
-    <p class="mb-0">Chargement des scénarios...</p>
+  <!-- Loading Scenarios -->
+  <div *ngIf="isloadingScenarios" class="text-center py-5">
+    <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;"></div>
+    <p class="mt-3 text-muted">Loading security scenarios...</p>
   </div>
 
-  <!-- Aucun scénario -->
+  <!-- No Scenarios Available -->
   <div
     *ngIf="!isloadingScenarios && scenarios.length === 0"
-    class="alert alert-warning text-center mb-2"
+    class="alert alert-warning text-center py-4"
   >
-    Aucun scénario disponible.
+    <i class="bi bi-exclamation-triangle me-2"></i>
+    No security scenarios available.
   </div>
 
-  <!-- Aucun scénario sélectionné -->
+  <!-- No Scenario Selected -->
   <div
     *ngIf="!isloadingScenarios && scenarios.length > 0 && !selectedScenario"
-    class="alert alert-info text-center mb-2"
+    class="alert alert-info text-center py-4"
   >
-    Sélectionnez un scénario pour afficher son analyse IA.
+    <i class="bi bi-info-circle me-2"></i>
+    Please select a scenario to view AI performance analysis.
   </div>
 
-  <!-- Affichage des données + CHART -->
-  <div *ngIf="performanceData && selectedScenario" class="card p-2 shadow-sm">
-    <h5 class="mb-1">📊 Analyse du scénario : {{ selectedScenario.name }}</h5>
-    <hr class="my-1" />
+  <!-- Performance Data & Chart -->
+  <div *ngIf="performanceData && selectedScenario" class="row g-4">
+    <!-- Main Performance Card -->
+    <div class="col-lg-8">
+      <div class="card shadow-sm border-0 h-100">
+        <div class="card-header bg-primary text-white py-3">
+          <h5 class="mb-0 d-flex align-items-center">
+            <i class="bi bi-graph-up me-2"></i>
+            Performance Analysis: {{ selectedScenario.name }}
+          </h5>
+        </div>
+        <div class="card-body">
+          <!-- Performance Metrics -->
+          <div class="row mb-4">
+            <div class="col-md-6">
+              <div class="metric-card text-center p-3 border rounded">
+                <h6 class="text-muted mb-2">Performance Score</h6>
+                <div class="display-4 fw-bold" [ngClass]="'text-' + getPerformanceColor(performanceData.performance_score)">
+                  {{ performanceData.performance_score }}%
+                </div>
+                <div class="progress mt-2" style="height: 8px;">
+                  <div class="progress-bar" 
+                       [ngClass]="'bg-' + getPerformanceColor(performanceData.performance_score)"
+                       [style.width]="performanceData.performance_score + '%'">
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="metric-card text-center p-3 border rounded">
+                <h6 class="text-muted mb-2">Risk Level</h6>
+                <div class="display-4 fw-bold" [ngClass]="'text-' + getRiskLevelColor(performanceData.risk_level)">
+                  {{ performanceData.risk_level }}
+                </div>
+                <span class="badge mt-2" [ngClass]="'bg-' + getRiskLevelColor(performanceData.risk_level)">
+                  {{ getRiskLevelDescription(performanceData.risk_level) }}
+                </span>
+              </div>
+            </div>
+          </div>
 
-    <p class="mb-1">
-      <strong>Performance Score :</strong>
-      <span
-        class="badge"
-        [ngClass]="
-          'bg-' + getPerformanceColor(performanceData.performance_score)
-        "
-      >
-        {{ performanceData.performance_score }}%
-      </span>
-    </p>
-
-    <p class="mb-2">
-      <strong>Niveau de Risque :</strong>
-      <span
-        class="badge"
-        [ngClass]="'bg-' + getRiskLevelColor(performanceData.risk_level)"
-      >
-        {{ performanceData.risk_level }}
-      </span>
-    </p>
-
-    <div class="mt-1">
-      <h6 class="mb-1">📈 Détails :</h6>
-      <ul class="mb-1">
-        <li class="mb-0">
-          <strong>Couverture Événements :</strong>
-          {{ performanceData.performance_data?.event_coverage?.score }}%
-        </li>
-        <li class="mb-0">
-          <strong>Configuration Conditions :</strong>
-          {{ performanceData.performance_data?.condition_setup?.score }}%
-        </li>
-        <li class="mb-0">
-          <strong>Prêteté Actions :</strong>
-          {{ performanceData.performance_data?.action_readiness?.score }}%
-        </li>
-      </ul>
-    </div>
-
-    <!-- Bar Chart -->
-    <div class="mt-2">
-      <h6 class="mb-1">📊 Visualisation des Scores</h6>
-      <div style="height: 250px;">
-        <canvas baseChart
-          [data]="barChartData"
-          [options]="barChartOptions"
-          [type]="barChartType">
-        </canvas>
+          <!-- Bar Chart -->
+          <div class="mb-4">
+            <h6 class="mb-3 d-flex align-items-center">
+              <i class="bi bi-bar-chart me-2"></i>
+              Performance Metrics Breakdown
+            </h6>
+            <div style="height: 300px;">
+              <canvas baseChart
+                [data]="barChartData"
+                [options]="barChartOptions"
+                [type]="barChartType">
+              </canvas>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 
-    <div class="mt-2 recos-section">
-      <h6 class="mb-1">💡 Recommandations :</h6>
-      <ul>
-        <li *ngFor="let rec of performanceData.recommendations">
-          {{ rec.title }} — {{ rec.description }}
-        </li>
-      </ul>
-    </div>
+    <!-- Sidebar with Details & Insights -->
+    <div class="col-lg-4">
+      <!-- Performance Details -->
+      <div class="card shadow-sm border-0 mb-4">
+        <div class="card-header bg-light py-3">
+          <h6 class="mb-0 d-flex align-items-center">
+            <i class="bi bi-speedometer2 me-2"></i>
+            Performance Details
+          </h6>
+        </div>
+        <div class="card-body">
+          <div class="detail-item mb-3">
+            <div class="d-flex justify-content-between align-items-center mb-1">
+              <span class="fw-semibold">Event Coverage</span>
+              <span class="badge bg-info">{{ performanceData.performance_data?.event_coverage?.score }}%</span>
+            </div>
+            <div class="progress" style="height: 6px;">
+              <div class="progress-bar bg-info" [style.width]="performanceData.performance_data?.event_coverage?.score + '%'"></div>
+            </div>
+          </div>
 
-    <div class="mt-1 insights-section">
-      <h6 class="mb-1">🤖 Insights IA :</h6>
-      <ul>
-        <li *ngFor="let insight of performanceData.ai_insights">
-          {{ insight }}
-        </li>
-      </ul>
+          <div class="detail-item mb-3">
+            <div class="d-flex justify-content-between align-items-center mb-1">
+              <span class="fw-semibold">Condition Setup</span>
+              <span class="badge bg-warning">{{ performanceData.performance_data?.condition_setup?.score }}%</span>
+            </div>
+            <div class="progress" style="height: 6px;">
+              <div class="progress-bar bg-warning" [style.width]="performanceData.performance_data?.condition_setup?.score + '%'"></div>
+            </div>
+          </div>
+
+          <div class="detail-item mb-3">
+            <div class="d-flex justify-content-between align-items-center mb-1">
+              <span class="fw-semibold">Action Readiness</span>
+              <span class="badge bg-success">{{ performanceData.performance_data?.action_readiness?.score }}%</span>
+            </div>
+            <div class="progress" style="height: 6px;">
+              <div class="progress-bar bg-success" [style.width]="performanceData.performance_data?.action_readiness?.score + '%'"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Recommendations -->
+      <div class="card shadow-sm border-0 mb-4">
+        <div class="card-header bg-light py-3">
+          <h6 class="mb-0 d-flex align-items-center">
+            <i class="bi bi-lightbulb me-2"></i>
+            AI Recommendations
+          </h6>
+        </div>
+        <div class="card-body recos-section">
+          <div *ngFor="let rec of performanceData.recommendations" class="mb-3 p-2 border-start border-3 border-primary">
+            <h6 class="fw-semibold mb-1">{{ rec.title }}</h6>
+            <p class="text-muted small mb-0">{{ rec.description }}</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- AI Insights -->
+      <div class="card shadow-sm border-0">
+        <div class="card-header bg-light py-3">
+          <h6 class="mb-0 d-flex align-items-center">
+            <i class="bi bi-robot me-2"></i>
+            AI Insights
+          </h6>
+        </div>
+        <div class="card-body insights-section">
+          <div *ngFor="let insight of performanceData.ai_insights" class="mb-2 p-2 bg-light rounded">
+            <p class="small mb-0">{{ insight }}</p>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 
-  <!-- Loading IA -->
-  <div *ngIf="isLoading" class="text-center my-2">
-    <div class="spinner-border text-primary"></div>
-    <p class="mb-0">Analyse IA en cours...</p>
+  <!-- Loading AI Analysis -->
+  <div *ngIf="isLoading" class="text-center py-5">
+    <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;"></div>
+    <p class="mt-3 text-muted">Running AI analysis...</p>
   </div>
 </div>

@@ -1,0 +1,211 @@
+<!-- src/app/frontoffice/scenarios/scenario-detail/scenario-detail.component.html -->
+<div class="scenario-detail-container">
+  <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom shadow-sm mb-4">
+    <div class="container-fluid">
+      <a class="navbar-brand fw-bold text-primary fs-3" href="#">
+        <i class="bi bi-shield-check me-2"></i>SafeGuard
+      </a>
+      <div class="collapse navbar-collapse">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item">
+            <a class="nav-link text-dark" routerLink="/frontoffice">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link text-primary active fw-semibold" routerLink="/frontoffice/scenarios">Scenarios</a>
+          </li>
+          <li class="nav-item ms-2">
+            <a class="btn btn-outline-primary btn-sm" href="/backoffice">Login</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container py-4">
+    <div class="row justify-content-center">
+      <div class="col-lg-10">
+        <!-- Back Button -->
+        <div class="mb-4">
+          <a routerLink="/frontoffice/scenarios" class="btn btn-outline-secondary btn-sm">
+            <i class="bi bi-arrow-left me-2"></i>Back to Scenarios
+          </a>
+        </div>
+
+        <!-- Main Card -->
+        <div class="card shadow-lg border-0">
+          <div class="card-header bg-primary text-white py-3">
+            <div class="d-flex justify-content-between align-items-center">
+              <h3 class="mb-0">
+                <i class="bi bi-file-earmark-text me-2"></i>Scenario Details
+              </h3>
+              <span class="badge" [ngClass]="scenario.is_active ? 'bg-success' : 'bg-danger'">
+                {{ scenario.is_active ? 'Active' : 'Inactive' }}
+              </span>
+            </div>
+          </div>
+          
+          <div class="card-body p-4" *ngIf="!loading && !error">
+            <!-- Scenario Header -->
+            <div class="row mb-4">
+              <div class="col-12">
+                <h2 class="text-primary mb-2">{{ scenario.name }}</h2>
+                <p class="text-muted mb-0">Created by: {{ scenario.user_name || 'Unknown' }}</p>
+              </div>
+            </div>
+
+            <div class="row">
+              <!-- Basic Information -->
+              <div class="col-md-6">
+                <h5 class="border-bottom pb-2 mb-3">Basic Information</h5>
+                
+                <div class="detail-item mb-3">
+                  <i class="bi bi-flag-fill me-2 text-primary"></i>
+                  <strong>Priority:</strong>
+                  <span [ngClass]="{
+                    'badge bg-danger ms-2': scenario.priority === 'critical',
+                    'badge bg-warning text-dark ms-2': scenario.priority === 'high',
+                    'badge bg-info ms-2': scenario.priority === 'medium',
+                    'badge bg-secondary ms-2': scenario.priority === 'low'
+                  }">
+                    {{ scenario.priority | titlecase }}
+                  </span>
+                </div>
+
+                <div class="detail-item mb-3">
+                  <i class="bi bi-calendar me-2 text-primary"></i>
+                  <strong>Created:</strong> 
+                  <span class="ms-2">{{ scenario.created_at ? (scenario.created_at | date:'medium') : 'Not available' }}</span>
+                </div>
+
+                <div class="detail-item mb-3">
+                  <i class="bi bi-clock me-2 text-primary"></i>
+                  <strong>Time Range:</strong>
+                  <span class="ms-2" *ngIf="scenario.start_time && scenario.end_time">
+                    {{ formatTime(scenario.start_time) }} - {{ formatTime(scenario.end_time) }}
+                  </span>
+                  <span class="ms-2 text-muted" *ngIf="!scenario.start_time || !scenario.end_time">
+                    Not set
+                  </span>
+                </div>
+
+                <div class="detail-item mb-3">
+                  <i class="bi bi-calendar-week me-2 text-primary"></i>
+                  <strong>Active Days:</strong>
+                  <span class="ms-2">{{ getDaysOfWeekText(scenario.days_of_week) }}</span>
+                </div>
+              </div>
+
+              <!-- Configuration Details -->
+              <div class="col-md-6">
+                <h5 class="border-bottom pb-2 mb-3">Configuration</h5>
+
+                <div class="detail-item mb-3">
+                  <i class="bi bi-bell me-2 text-primary"></i>
+                  <strong>Event Types:</strong>
+                  <span class="ms-2" *ngIf="scenario.event_types && scenario.event_types.length > 0">
+                    {{ scenario.event_types.join(', ') | titlecase }}
+                  </span>
+                  <span class="ms-2 text-muted" *ngIf="!scenario.event_types || scenario.event_types.length === 0">
+                    No events configured
+                  </span>
+                </div>
+
+                <div class="detail-item mb-3">
+                  <i class="bi bi-camera-video me-2 text-primary"></i>
+                  <strong>Camera Scope:</strong>
+                  <span class="ms-2">{{ scenario.apply_to_all_cameras ? 'All Cameras' : 'Specific Cameras' }}</span>
+                </div>
+
+                <div class="detail-item mb-3">
+                  <i class="bi bi-megaphone me-2 text-primary"></i>
+                  <strong>Alerts:</strong>
+                  <span class="ms-2">
+                    <span *ngIf="scenario.alert_email" class="badge bg-primary me-1">Email</span>
+                    <span *ngIf="scenario.alert_sms" class="badge bg-info me-1">SMS</span>
+                    <span *ngIf="!scenario.alert_email && !scenario.alert_sms" class="text-muted">None</span>
+                  </span>
+                </div>
+
+                <div class="detail-item mb-3">
+                  <i class="bi bi-record-circle me-2 text-primary"></i>
+                  <strong>Recording:</strong>
+                  <span class="ms-2">{{ scenario.save_recording ? 'Enabled' : 'Disabled' }}</span>
+                </div>
+
+                <div class="detail-item mb-3">
+                  <i class="bi bi-gear me-2 text-primary"></i>
+                  <strong>Mode:</strong>
+                  <span class="ms-2">{{ scenario.is_manual ? 'Manual' : 'Automatic' }}</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Additional Information -->
+            <div class="row mt-4" *ngIf="scenario.preview">
+              <div class="col-12">
+                <h5 class="border-bottom pb-2 mb-3">Preview</h5>
+                <div class="alert alert-light border">
+                  <p class="mb-0">{{ scenario.preview }}</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Updated Action Buttons Section -->
+            <div class="row mt-4">
+            <div class="col-12">
+                <div class="d-flex gap-2 flex-wrap">
+                <a routerLink="/frontoffice/scenarios" class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-left me-2"></i>Back to List
+                </a>
+                
+                <!-- Pause/Activate Button -->
+                <button 
+                    class="btn" 
+                    [ngClass]="scenario.is_active ? 'btn-outline-warning' : 'btn-outline-success'"
+                    (click)="toggleScenarioStatus()"
+                    [disabled]="updating"
+                >
+                    <i class="bi me-2" [ngClass]="scenario.is_active ? 'bi-pause' : 'bi-play'"></i>
+                    <span *ngIf="!updating">
+                    {{ scenario.is_active ? 'Pause Scenario' : 'Activate Scenario' }}
+                    </span>
+                    <span *ngIf="updating">
+                    <span class="spinner-border spinner-border-sm me-2"></span>
+                    Updating...
+                    </span>
+                </button>
+                </div>
+            </div>
+            </div>
+
+          <!-- Loading State -->
+          <div class="card-body text-center py-5" *ngIf="loading">
+            <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;"></div>
+            <p class="mt-3 text-muted">Loading scenario details...</p>
+          </div>
+
+          <!-- Error State -->
+          <div class="card-body text-center py-5" *ngIf="error">
+            <i class="bi bi-exclamation-triangle text-danger" style="font-size: 3rem;"></i>
+            <h4 class="text-danger mt-3">Scenario Not Found</h4>
+            <p class="text-muted">The requested scenario could not be loaded.</p>
+            <a routerLink="/frontoffice/scenarios" class="btn btn-outline-danger">
+              <i class="bi bi-arrow-left me-2"></i>Back to Scenarios
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <footer class="mt-5 pt-5 text-center text-muted border-top">
+      <div class="row">
+        <div class="col-12">
+          <p class="mb-2">&copy; 2025 SafeGuard. All rights reserved.</p>
+          <div class="text-muted small">
+            Building a safer digital world
+          </div>
+        </div>
+      </div>
+    </footer>
+  </div>
+</div>

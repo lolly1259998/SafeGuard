@@ -1,0 +1,49 @@
+/* src/app/frontoffice/scenarios/scenario-detail/scenario-detail.component.css */
+.scenario-detail-container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f8f9ff 0%, #f0f4ff 100%);
+}
+
+.detail-item {
+  display: flex;
+  align-items: center;
+  padding: 0.5rem 0;
+}
+
+.card {
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.card-header {
+  border-radius: 0 !important;
+}
+
+.badge {
+  font-size: 0.75rem;
+  font-weight: 500;
+  padding: 0.4em 0.8em;
+}
+
+.btn {
+  border-radius: 6px;
+  font-weight: 500;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .scenario-detail-container .container {
+    padding-left: 15px;
+    padding-right: 15px;
+  }
+  
+  .detail-item {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .detail-item .ms-2 {
+    margin-left: 0 !important;
+    margin-top: 0.25rem;
+  }
+}

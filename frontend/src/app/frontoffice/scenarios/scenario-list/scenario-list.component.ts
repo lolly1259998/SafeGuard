@@ -1,21 +1,22 @@
-// src/app/frontoffice/main/main.component.ts
+// src/app/frontoffice/scenarios/scenario-list/scenario-list.component.ts
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
-import { ScenarioCardComponent } from '../scenarios/scenario-card/scenario-card.component';
-import { ScenarioService, SecurityScenario } from '../services/scenario.service';
+import { ScenarioCardComponent } from '../scenario-card/scenario-card.component';
+import { ScenarioService, SecurityScenario } from '../../services/scenario.service';
 
 @Component({
-  selector: 'app-main',
+  selector: 'app-scenario-list',
   standalone: true,
   imports: [
     CommonModule,
     RouterLink,
+    ScenarioCardComponent   // ← REQUIRED
   ],
-  templateUrl: './main.component.html',
-  styleUrl: './main.component.css'
+  templateUrl: './scenario-list.component.html',
+  styleUrl: './scenario-list.component.css'
 })
-export class MainComponent implements OnInit {
+export class ScenarioListComponent implements OnInit {
   scenarios: SecurityScenario[] = [];
   loading = true;
   error = false;

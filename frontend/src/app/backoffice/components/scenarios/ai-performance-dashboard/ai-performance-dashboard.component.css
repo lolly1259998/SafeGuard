@@ -1,62 +1,91 @@
+/* src/app/frontoffice/ai-dashboard/ai-dashboard.component.css */
 .ai-performance-dashboard {
-  background-color: #f9fafb;
-  padding: 0.5rem;
-  border-radius: 0.75rem;
+  background: linear-gradient(135deg, #f8f9ff 0%, #f0f4ff 100%);
+  min-height: 100vh;
+  padding: 1.5rem;
 }
 
 .card {
-  border: 1px solid #dee2e6;
-  border-radius: 1rem;
-  margin-bottom: 1rem;
+  border-radius: 12px;
+  overflow: hidden;
 }
 
-h4 {
-  font-weight: bold;
-  color: #1a73e8;
-  margin-bottom: 0.5rem;
+.card-header {
+  border-bottom: 1px solid rgba(0,0,0,0.125);
 }
 
-h5, h6 {
-  margin-bottom: 0.5rem;
+.metric-card {
+  background: white;
+  border-radius: 8px;
+  transition: transform 0.2s ease;
 }
 
-.badge {
-  font-size: 1rem;
-  padding: 0.5em 0.75em;
+.metric-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
 }
 
-.spinner-border {
-  width: 2rem;
-  height: 2rem;
+.detail-item {
+  padding: 0.5rem 0;
 }
 
-ul {
-  margin-bottom: 0.5rem;
-}
-
-li {
-  margin-bottom: 0.25rem;
-}
-
-canvas {
-  max-height: 250px;
-  width: 100% !important;
-  margin-top: 0.5rem;
-}
-
-.recos-section, .insights-section {
-  max-height: 200px;
+.recos-section {
+  max-height: 300px;
   overflow-y: auto;
-  border: 1px solid #e9ecef;
-  border-radius: 0.25rem;
-  padding: 0.5rem;
 }
 
-.accordion-btn {
-  background: none;
-  border: none;
-  text-align: left;
-  width: 100%;
-  padding: 0.5rem;
-  cursor: pointer;
+.insights-section {
+  max-height: 250px;
+  overflow-y: auto;
+}
+
+/* Custom scrollbar */
+.recos-section::-webkit-scrollbar,
+.insights-section::-webkit-scrollbar {
+  width: 6px;
+}
+
+.recos-section::-webkit-scrollbar-track,
+.insights-section::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 3px;
+}
+
+.recos-section::-webkit-scrollbar-thumb,
+.insights-section::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 3px;
+}
+
+.recos-section::-webkit-scrollbar-thumb:hover,
+.insights-section::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+
+/* Progress bar animations */
+.progress-bar {
+  transition: width 0.6s ease;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .ai-performance-dashboard {
+    padding: 1rem;
+  }
+  
+  .dashboard-header .d-flex {
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .display-4 {
+    font-size: 2rem;
+  }
+}
+
+/* Badge styles */
+.badge {
+  font-size: 0.75rem;
+  font-weight: 500;
+  padding: 0.4em 0.8em;
 }
