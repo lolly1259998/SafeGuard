@@ -1,13 +1,43 @@
 <div class="container py-4">
   <a routerLink="/cameras" class="text-decoration-none">← Retour à la liste</a>
 
-  <h3 class="mt-2" *ngIf="camera">Lecture: {{ camera.name }}</h3>
+  <div class="d-flex align-items-center justify-content-between mt-2">
+    <h3 class="mb-0" *ngIf="camera">Lecture: {{ camera.name }}</h3>
+    <div class="d-flex gap-3 align-items-center">
+      <div class="form-check form-switch m-0">
+        <input class="form-check-input" type="checkbox" id="nightMode" [(ngModel)]="nightMode">
+        <label class="form-check-label" for="nightMode">Mode nuit</label>
+      </div>
+      <div class="form-check form-switch m-0">
+        <input class="form-check-input" type="checkbox" id="overlayOn" [(ngModel)]="overlayOn">
+        <label class="form-check-label" for="overlayOn">Analyse</label>
+      </div>
+    </div>
+  </div>
 
   <div *ngIf="error" class="alert alert-danger mt-3">{{ error }}</div>
   <div *ngIf="loading" class="text-muted">Chargement...</div>
 
-  <div class="ratio ratio-16x9 mt-3" *ngIf="!loading">
-    <video #videoEl controls autoplay muted playsinline class="w-100" crossorigin="anonymous"></video>
+  <div class="player-wrap mt-3" *ngIf="!loading">
+    <div class="ratio ratio-16x9 position-relative" *ngIf="!mjpegUrl">
+      <video #videoEl controls autoplay muted playsinline class="w-100 h-100" crossorigin="anonymous"></video>
+      <canvas #canvasEl class="overlay-canvas" *ngIf="overlayOn"></canvas>
+      <div class="hud" *ngIf="overlayOn">
+        <div><strong>FPS:</strong> {{ metrics.fps | number:'1.0-0' }}</div>
+        <div><strong>Luminosité:</strong> {{ metrics.luma | number:'1.0-0' }}</div>
+        <div><strong>Noires:</strong> {{ metrics.darkPct | number:'1.0-0' }}%</div>
+      </div>
+    </div>
+
+    <div class="position-relative" *ngIf="mjpegUrl">
+      <img #imgEl [src]="mjpegUrl" alt="MJPEG stream" class="img-fluid rounded border w-100" />
+      <canvas #canvasEl class="overlay-canvas" *ngIf="overlayOn"></canvas>
+      <div class="hud" *ngIf="overlayOn">
+        <div><strong>FPS:</strong> {{ metrics.fps | number:'1.0-0' }}</div>
+        <div><strong>Luminosité:</strong> {{ metrics.luma | number:'1.0-0' }}</div>
+        <div><strong>Noires:</strong> {{ metrics.darkPct | number:'1.0-0' }}%</div>
+      </div>
+    </div>
   </div>
 
   <div class="mt-3 text-muted" *ngIf="camera">
