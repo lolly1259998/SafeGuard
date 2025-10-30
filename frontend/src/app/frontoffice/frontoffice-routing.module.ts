@@ -9,7 +9,7 @@ const routes: Routes = [
     path: '',
     component: MainComponent,
     children: [
-      { path: '', redirectTo: 'my-cameras-access', pathMatch: 'full' },
+      { path: '', redirectTo: 'main', pathMatch: 'full' },
       { path: 'my-cameras-access', component: MyCameraAccessComponent },
       { path: 'my-centers-access', component: MyControlCenterAccessComponent },
     ],
