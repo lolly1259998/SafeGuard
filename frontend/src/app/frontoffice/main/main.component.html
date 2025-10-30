@@ -1,96 +1,43 @@
-<nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom mb-4">
-  <div class="container-fluid">
-    <a class="navbar-brand fw-bold text-primary" href="#">SafeGuard</a>
-    <button
-      class="navbar-toggler"
-      type="button"
-      data-bs-toggle="collapse"
-      data-bs-target="#navbarNav"
-      aria-controls="navbarNav"
-      aria-expanded="false"
-      aria-label="Toggle navigation"
-    >
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarNav">
-      <ul class="navbar-nav ms-auto">
-        <li class="nav-item">
-          <a class="nav-link text-primary" href="#">Accueil</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link text-primary" href="#">Fonctionnalités</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link text-primary" href="#">Tarifs</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link text-primary" href="#">Contact</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link text-primary" href="#">Connexion</a>
-        </li>
-      </ul>
+<!-- src/app/frontoffice/main/main.component.html -->
+<div class="container-fluid vh-100 d-flex flex-column">
+  <!-- Header avec navigation intégrée -->
+  <header class="bg-primary text-white p-3 shadow-sm">
+    <div class="d-flex justify-content-between align-items-center container-fluid">
+      <h5 class="mb-0">SafeGuard - Frontoffice</h5>
+      <div>
+        <ul class="nav nav-tabs">
+          <li class="nav-item">
+            <a
+              class="nav-link text-white"
+              routerLink="my-cameras"
+              routerLinkActive="active"
+              [routerLinkActiveOptions]="{ exact: false }"
+            >
+              camera-access
+            </a>
+          </li>
+          <li class="nav-item">
+            <a
+              class="nav-link text-white"
+              routerLink="my-centers"
+              routerLinkActive="active"
+              [routerLinkActiveOptions]="{ exact: false }"
+            >
+              control-center-access
+            </a>
+          </li>
+        </ul>
+      </div>
     </div>
-  </div>
-</nav>
+  </header>
 
-<div
-  class="container d-flex flex-column justify-content-center align-items-center min-vh-100"
->
-  <div class="text-center mb-5">
-    <h1 class="display-3 fw-bold text-primary">SafeGuard</h1>
-    <p class="lead text-secondary mb-4">
-      Protecting your data, empowering your business.<br />
-      Discover secure, reliable, and easy-to-use solutions.
-    </p>
-    <a href="#" class="btn btn-primary btn-lg px-5">Get Started</a>
+  <!-- Contenu des routes enfants -->
+  <div class="flex-grow-1 overflow-auto p-4 bg-light">
+    <router-outlet></router-outlet>
   </div>
-  <div class="row w-100 justify-content-center mb-5">
-    <div class="col-md-4 mb-3">
-      <div class="card border-0 shadow-sm h-100">
-        <div class="card-body text-center">
-          <div class="mb-3">
-            <span class="fs-1 text-success"
-              ><i class="bi bi-shield-lock"></i
-            ></span>
-          </div>
-          <h5 class="card-title fw-bold">Security</h5>
-          <p class="card-text text-secondary">
-            Advanced protection for your sensitive information.
-          </p>
-        </div>
-      </div>
-    </div>
-    <div class="col-md-4 mb-3">
-      <div class="card border-0 shadow-sm h-100">
-        <div class="card-body text-center">
-          <div class="mb-3">
-            <span class="fs-1 text-info"
-              ><i class="bi bi-speedometer"></i
-            ></span>
-          </div>
-          <h5 class="card-title fw-bold">Performance</h5>
-          <p class="card-text text-secondary">
-            Fast, reliable access to your platform anytime.
-          </p>
-        </div>
-      </div>
-    </div>
-    <div class="col-md-4 mb-3">
-      <div class="card border-0 shadow-sm h-100">
-        <div class="card-body text-center">
-          <div class="mb-3">
-            <span class="fs-1 text-warning"><i class="bi bi-people"></i></span>
-          </div>
-          <h5 class="card-title fw-bold">Support</h5>
-          <p class="card-text text-secondary">
-            Expert help and resources when you need them.
-          </p>
-        </div>
-      </div>
-    </div>
-  </div>
-  <footer class="mt-auto py-3 text-center text-muted w-100 border-top">
-    &copy; 2025 SafeGuard Platform
+
+  <!-- Footer -->
+  <footer class="bg-white border-top py-2 text-center text-muted small">
+    © 2025 SafeGuard Platform
   </footer>
 </div>

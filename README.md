@@ -46,3 +46,6 @@ py manage.py runserver
 routes backoffice:
 http://localhost:4200/backoffice/control-center-access
 http://localhost:4200/backoffice/camera-access
+
+
+http://localhost:8000/api/ai/model-info/

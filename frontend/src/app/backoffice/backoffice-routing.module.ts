@@ -9,9 +9,9 @@ const routes: Routes = [
     path: '',
     component: DashboardComponent,
     children: [
+      { path: '', redirectTo: 'camera-access', pathMatch: 'full' },
       { path: 'camera-access', component: CameraAccessListComponent },
       { path: 'control-center-access', component: ControlCenterAccessListComponent },
-      { path: '', redirectTo: 'camera-access', pathMatch: 'full' },
     ],
   },
 ];

@@ -1,10 +1,9 @@
-import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
+import { Routes } from '@angular/router';
 
 export const routes: Routes = [
   // === Frontoffice ===
   {
-    path: '',
+    path: 'front',
     loadChildren: () =>
       import('./frontoffice/frontoffice.module').then(
         (m) => m.FrontofficeModule
@@ -15,17 +14,12 @@ export const routes: Routes = [
   {
     path: 'backoffice',
     loadChildren: () =>
-      import('./backoffice/backoffice-routing.module').then(
-        (m) => m.BackofficeRoutingModule
+      import('./backoffice/backoffice.module').then(
+        (m) => m.BackofficeModule
       ),
   },
 
   // === Redirection par défaut ===
-  { path: '**', redirectTo: 'backoffice', pathMatch: 'full' },
+  { path: '', redirectTo: 'front', pathMatch: 'full' },
+  { path: '**', redirectTo: 'front', pathMatch: 'full' },
 ];
-
-@NgModule({
-  imports: [RouterModule.forRoot(routes)],
-  exports: [RouterModule],
-})
-export class AppRoutingModule {}

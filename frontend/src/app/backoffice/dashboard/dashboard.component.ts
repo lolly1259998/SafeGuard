@@ -1,10 +1,17 @@
+// src/app/backoffice/dashboard/dashboard.component.ts
 import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-dashboard',
-  imports: [RouterOutlet],
-  templateUrl: './dashboard.component.html',
-  styleUrl: './dashboard.component.css',
+  standalone: true,
+  imports: [
+    CommonModule,
+    RouterLink,
+    RouterLinkActive,
+    RouterOutlet   // ← AJOUTÉ
+  ],
+  templateUrl: './dashboard.component.html'
 })
 export class DashboardComponent {}
