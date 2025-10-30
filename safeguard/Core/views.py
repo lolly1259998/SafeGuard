@@ -18,6 +18,20 @@ class DashboardView(View):
         return render(request, 'dashboard.html')
 
 
+    def perform_create(self, serializer):
+        user = getattr(self.request, 'user', None)
+        if user and user.is_authenticated:
+            serializer.save(owner=user)
+        else:
+            serializer.save()
+
+    def perform_update(self, serializer):
+        user = getattr(self.request, 'user', None)
+        if user and user.is_authenticated:
+            serializer.save(owner=user)
+        else:
+            serializer.save()
+
 # === CONTROL CENTER ===
 class ControlCenterViewSet(viewsets.ModelViewSet):
     queryset = ControlCenter.objects.all()
