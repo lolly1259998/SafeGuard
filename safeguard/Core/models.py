@@ -171,23 +171,59 @@ class ControlCenterUserAccess(models.Model):
 # ========================
 # 6. Événements (générés par IA, mais gérables)
 # ========================
+
 class Event(models.Model):
     EVENT_TYPES = SecurityScenario.EVENT_TYPES  # Réutilise les mêmes choix
+
+    PRIORITY_CHOICES = [
+        ('low', 'Faible'),
+        ('medium', 'Moyenne'),
+        ('high', 'Haute'),
+        ('critical', 'Critique'),
+    ]
 
     camera = models.ForeignKey(Camera, on_delete=models.CASCADE, related_name='events')
     event_type = models.CharField(max_length=30, choices=EVENT_TYPES)
     timestamp = models.DateTimeField(auto_now_add=True)
+
     confidence_score = models.FloatField(
         validators=[MinValueValidator(0.0), MaxValueValidator(1.0)],
         help_text="Score de confiance de la détection IA (0.0 à 1.0)"
     )
-    metadata = models.JSONField(default=dict, blank=True)  # ex: {"zone": "Entrée", "object_class": "person"}
+
+    priority = models.CharField(
+        max_length=10, choices=PRIORITY_CHOICES, default='low',
+        help_text="Niveau de criticité automatique basé sur le type et la confiance"
+    )
+
+    metadata = models.JSONField(default=dict, blank=True)
+    snapshot = models.ImageField(upload_to='events/', blank=True, null=True)
+
     is_processed = models.BooleanField(default=False)
     processed_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
     notes = models.TextField(blank=True)
 
+    snapshot = models.ImageField(upload_to='events_snapshots/', null=True, blank=True)
+
     def __str__(self):
         return f"{self.event_type} @ {self.camera.name} ({self.timestamp.strftime('%Y-%m-%d %H:%M')})"
+
+    # 🔹 Détermine la priorité automatiquement
+    def calculate_priority(self):
+        if self.event_type in ['intrusion', 'unknown_face']:
+            return 'critical'
+        elif self.confidence_score >= 0.8:
+            return 'high'
+        elif self.confidence_score >= 0.5:
+            return 'medium'
+        return 'low'
+
+    # 🔹 Auto-calcul avant enregistrement
+    def save(self, *args, **kwargs):
+        self.priority = self.calculate_priority()
+        if not isinstance(self.metadata, dict):
+            self.metadata = {}
+        super().save(*args, **kwargs)
 
 
 # ========================

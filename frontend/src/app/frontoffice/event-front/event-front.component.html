@@ -24,6 +24,124 @@
     <p class="mt-2">No events found.</p>
   </div>
 
+  <!-- 🔍 Filters -->
+  <div class="card border-0 shadow-sm rounded-4 mb-4">
+    <div class="card-body">
+      <div class="row g-3 align-items-end">
+        <!-- Search -->
+        <div class="col-md-4">
+          <label class="form-label fw-semibold">Search</label>
+          <input
+            type="text"
+            class="form-control"
+            placeholder="Search by metadata, notes, or type..."
+            [(ngModel)]="filters.search"
+            (input)="applyFilters()"
+          />
+        </div>
+
+        <!-- Camera -->
+        <div class="col-md-3">
+          <label class="form-label fw-semibold">Camera</label>
+          <select
+            class="form-select"
+            [(ngModel)]="filters.camera"
+            (change)="applyFilters()"
+          >
+            <option value="">All Cameras</option>
+            <option *ngFor="let cam of cameras" [value]="cam.id">{{ cam.name }}</option>
+          </select>
+        </div>
+
+        <!-- Event Type -->
+        <div class="col-md-3">
+          <label class="form-label fw-semibold">Event Type</label>
+          <select
+            class="form-select"
+            [(ngModel)]="filters.event_type"
+            (change)="applyFilters()"
+          >
+            <option value="">All Types</option>
+            <option *ngFor="let type of eventTypes" [value]="type.value">
+              {{ type.label }}
+            </option>
+          </select>
+        </div>
+
+        <!-- Status -->
+        <div class="col-md-2">
+          <label class="form-label fw-semibold">Status</label>
+          <select
+            class="form-select"
+            [(ngModel)]="filters.status"
+            (change)="applyFilters()"
+          >
+            <option value="">All</option>
+            <option value="processed">Processed</option>
+            <option value="pending">Pending</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Advanced Filters -->
+      <div class="text-end mt-3">
+        <button
+          class="btn btn-outline-secondary btn-sm"
+          (click)="showAdvanced = !showAdvanced"
+        >
+          <i class="bi" [ngClass]="showAdvanced ? 'bi-chevron-up' : 'bi-funnel'"></i>
+          {{ showAdvanced ? 'Hide Advanced Filters' : 'Advanced Filters' }}
+        </button>
+      </div>
+
+      <div *ngIf="showAdvanced" class="mt-4 border-top pt-3">
+        <div class="row g-3">
+          <div class="col-md-4">
+            <label class="form-label fw-semibold">Confidence (Min)</label>
+            <input
+              type="number"
+              class="form-control"
+              step="0.01"
+              min="0"
+              max="1"
+              [(ngModel)]="filters.minConfidence"
+              (input)="applyFilters()"
+            />
+          </div>
+          <div class="col-md-4">
+            <label class="form-label fw-semibold">Confidence (Max)</label>
+            <input
+              type="number"
+              class="form-control"
+              step="0.01"
+              min="0"
+              max="1"
+              [(ngModel)]="filters.maxConfidence"
+              (input)="applyFilters()"
+            />
+          </div>
+          <div class="col-md-4">
+            <label class="form-label fw-semibold">Date Range</label>
+            <div class="d-flex gap-2">
+              <input
+                type="date"
+                class="form-control"
+                [(ngModel)]="filters.startDate"
+                (change)="applyFilters()"
+              />
+              <input
+                type="date"
+                class="form-control"
+                [(ngModel)]="filters.endDate"
+                (change)="applyFilters()"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Event Cards -->
   <div *ngIf="!loading && events.length > 0" class="row g-4">
     <div class="col-md-4" *ngFor="let event of events">
@@ -42,30 +160,29 @@
 
           <!-- Confidence -->
           <div class="mb-1">
-  <strong>Confidence:</strong>
-  <div class="progress" style="height: 8px;">
-    <div
-      class="progress-bar"
-      role="progressbar"
-      [ngClass]="{
-        'bg-danger': event.confidence_score < 0.4,
-        'bg-warning': event.confidence_score >= 0.4 && event.confidence_score < 0.75,
-        'bg-success': event.confidence_score >= 0.75
-      }"
-      [style.width.%]="event.confidence_score * 100"
-    ></div>
-  </div>
-  <small
-    [ngClass]="{
-      'text-danger': event.confidence_score < 0.4,
-      'text-warning': event.confidence_score >= 0.4 && event.confidence_score < 0.75,
-      'text-success': event.confidence_score >= 0.75
-    }"
-  >
-    {{ event.confidence_score | percent: '1.0-1' }}
-  </small>
-</div>
-
+            <strong>Confidence:</strong>
+            <div class="progress" style="height: 8px;">
+              <div
+                class="progress-bar"
+                role="progressbar"
+                [ngClass]="{
+                  'bg-danger': event.confidence_score < 0.4,
+                  'bg-warning': event.confidence_score >= 0.4 && event.confidence_score < 0.75,
+                  'bg-success': event.confidence_score >= 0.75
+                }"
+                [style.width.%]="event.confidence_score * 100"
+              ></div>
+            </div>
+            <small
+              [ngClass]="{
+                'text-danger': event.confidence_score < 0.4,
+                'text-warning': event.confidence_score >= 0.4 && event.confidence_score < 0.75,
+                'text-success': event.confidence_score >= 0.75
+              }"
+            >
+              {{ event.confidence_score | percent: '1.0-1' }}
+            </small>
+          </div>
 
           <!-- Date -->
           <p class="mb-1">
@@ -75,9 +192,7 @@
           <!-- Metadata -->
           <p class="mb-1">
             <strong>Metadata:</strong>
-            <code class="text-muted">
-              {{ event.metadata | json }}
-            </code>
+            <code class="text-muted">{{ event.metadata | json }}</code>
           </p>
 
           <!-- Processed By -->
@@ -94,7 +209,7 @@
             <strong>Notes:</strong> {{ event.notes || '—' }}
           </p>
 
-          <!-- Status -->
+          <!-- Status + Actions -->
           <div class="d-flex justify-content-between align-items-center mt-3">
             <span
               class="fw-semibold"
@@ -114,12 +229,12 @@
             </span>
 
             <div>
-            <button
-  class="btn btn-outline-primary btn-sm me-2"
-  (click)="openDetails(event, detailsModal)">
-  <i class="bi bi-eye"></i> Details
-</button>
-
+              <button
+                class="btn btn-outline-primary btn-sm me-2"
+                (click)="openDetails(event, detailsModal)"
+              >
+                <i class="bi bi-eye"></i> Details
+              </button>
 
               <button
                 class="btn btn-outline-danger btn-sm"
@@ -133,6 +248,25 @@
       </div>
     </div>
   </div>
+
+  <!-- 📄 Pagination -->
+  <nav *ngIf="events.length" class="d-flex justify-content-center mt-4">
+    <ul class="pagination pagination-sm">
+      <li class="page-item" [class.disabled]="currentPage === 1">
+        <button class="page-link" (click)="prevPage()">Prev</button>
+      </li>
+      <li
+        *ngFor="let p of totalPagesArray"
+        class="page-item"
+        [class.active]="p === currentPage"
+      >
+        <button class="page-link" (click)="goToPage(p)">{{ p }}</button>
+      </li>
+      <li class="page-item" [class.disabled]="currentPage === totalPages">
+        <button class="page-link" (click)="nextPage()">Next</button>
+      </li>
+    </ul>
+  </nav>
 </div>
 
 <!-- ✅ MODAL DETAILS -->

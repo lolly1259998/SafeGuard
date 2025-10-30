@@ -1,56 +1,82 @@
-import cv2
 import torch
+import cv2
 import requests
-from datetime import datetime
+import json
+import time
+import os
 
-API_URL = "http://127.0.0.1:8000/api/events/"  # ton endpoint Django REST
+DJANGO_API_URL = "http://127.0.0.1:8000/api/events/"
+CAMERA_ID = 1
+TEST_IMAGE = "cat.jpg"
+DETECTION_INTERVAL = 10
+REPEAT_DELAY = 30
+SNAPSHOT_DIR = os.path.join("media", "events_snapshots")
+os.makedirs(SNAPSHOT_DIR, exist_ok=True)
 
-# Chargement du modèle YOLOv8 (ou YOLOv5)
+
+print("🔍 Chargement du modèle YOLOv5...")
 model = torch.hub.load('ultralytics/yolov5', 'yolov5s', pretrained=True)
+print("✅ Modèle chargé avec succès !")
 
-def analyze_stream(camera_id, stream_url):
-    cap = cv2.VideoCapture(stream_url)
+last_event = None
+last_event_time = 0
 
-    while True:
-        ret, frame = cap.read()
-        if not ret:
-            break
+while True:
+    if not os.path.exists(TEST_IMAGE):
+        print(f"❌ Image {TEST_IMAGE} introuvable.")
+        break
 
-        # Détection
-        results = model(frame)
-        detections = results.pandas().xyxy[0]  # dataframe avec les détections
+    frame = cv2.imread(TEST_IMAGE)
+    results = model(frame)
+    detections = results.pandas().xyxy[0]
 
-        for _, det in detections.iterrows():
-            label = det['name']
-            confidence = float(det['confidence'])
+    if detections.empty:
+        print("⚠️ Aucune détection trouvée.")
+    else:
+        obj = detections.iloc[0]
+        confidence = round(float(obj['confidence']), 2)
+        label = obj['name']
+        now = time.time()
+        current_event = f"{label}_{confidence}"
 
-            # Définir la criticité
-            if label in ['person', 'knife', 'gun']:
-                priority = 'High'
-            elif label in ['car', 'dog']:
-                priority = 'Medium'
-            else:
-                priority = 'Low'
+        x1, y1, x2, y2 = map(int, [obj['xmin'], obj['ymin'], obj['xmax'], obj['ymax']])
+        cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 2)
+        cv2.putText(frame, f"{label} ({confidence*100:.1f}%)", (x1, y1 - 10),
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 0), 2)
 
-            # Sauvegarder une image clé
-            snapshot_path = f"media/events/snapshot_{datetime.now().strftime('%Y%m%d_%H%M%S')}.jpg"
-            cv2.imwrite(snapshot_path, frame)
+        snapshot_name = f"event_{int(time.time())}.jpg"
+        snapshot_path = os.path.join(SNAPSHOT_DIR, snapshot_name)
+        cv2.imwrite(snapshot_path, frame)
 
-            # Création automatique d’un Event dans Django via API
+        if current_event == last_event and (now - last_event_time) < REPEAT_DELAY:
+            print(f"⏸️ Même détection ({label}, {confidence}) ignorée.")
+        else:
+            files = {'snapshot': open(snapshot_path, 'rb')}
             data = {
-                "camera": camera_id,
-                "event_type": label,
+                "camera": CAMERA_ID,
+                "event_type": "motion",
                 "confidence_score": confidence,
-                "metadata": f"priority={priority}",
-                "is_processed": False,
-                "notes": "Détection automatique IA",
+                "metadata": json.dumps({
+                    "object_class": label,
+                    "zone": "Entrée principale"
+                })
             }
 
             try:
-                response = requests.post(API_URL, data=data)
-                print(f"[+] Event créé : {label} ({confidence:.2f}) → {response.status_code}")
+                r = requests.post(DJANGO_API_URL, data=data, files=files)
+                if r.status_code in [200, 201]:
+                    print(f"✅ Événement envoyé avec image : {snapshot_name}")
+                    last_event = current_event
+                    last_event_time = now
+                else:
+                    print(f"⚠️ Erreur API ({r.status_code}): {r.text}")
             except Exception as e:
-                print(f"Erreur API : {e}")
+                print(f"🚨 Erreur envoi API : {e}")
 
-    cap.release()
-    cv2.destroyAllWindows()
+    cv2.imshow("Détection IA - SafeGuard", frame)
+    if cv2.waitKey(1000) & 0xFF == ord('q'):
+        break
+
+    time.sleep(DETECTION_INTERVAL)
+
+cv2.destroyAllWindows()
