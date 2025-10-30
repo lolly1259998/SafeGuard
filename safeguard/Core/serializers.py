@@ -1,12 +1,13 @@
 from rest_framework import serializers
 from .models import CameraUserAccess, ControlCenterUserAccess, Camera, ControlCenter
-
+from .models import ControlCenter
 class CameraSerializer(serializers.ModelSerializer):
     owner = serializers.PrimaryKeyRelatedField(read_only=True)
 
     class Meta:
         model = Camera
         fields = '__all__'
+
 
 class ControlCenterSerializer(serializers.ModelSerializer):
     owner = serializers.PrimaryKeyRelatedField(read_only=True)
