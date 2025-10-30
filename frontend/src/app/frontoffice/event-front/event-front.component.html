@@ -1,0 +1,296 @@
+<app-navbar></app-navbar>
+
+<div class="container my-5">
+  <h2 class="text-center fw-bold text-primary mb-5">
+    <i class="bi bi-calendar-event me-2"></i> Event Dashboard
+  </h2>
+
+  <!-- Loader -->
+  <div *ngIf="loading" class="text-center text-secondary mt-4">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+    <p class="mt-2">Fetching events...</p>
+  </div>
+
+  <!-- Error -->
+  <div *ngIf="error" class="alert alert-danger text-center mt-3">
+    {{ error }}
+  </div>
+
+  <!-- No events -->
+  <div *ngIf="!loading && events.length === 0" class="text-center text-muted mt-4">
+    <i class="bi bi-exclamation-circle fs-3"></i>
+    <p class="mt-2">No events found.</p>
+  </div>
+
+  <!-- 🔍 Filters -->
+  <div class="card border-0 shadow-sm rounded-4 mb-4">
+    <div class="card-body">
+      <div class="row g-3 align-items-end">
+        <!-- Search -->
+        <div class="col-md-4">
+          <label class="form-label fw-semibold">Search</label>
+          <input
+            type="text"
+            class="form-control"
+            placeholder="Search by metadata, notes, or type..."
+            [(ngModel)]="filters.search"
+            (input)="applyFilters()"
+          />
+        </div>
+
+        <!-- Camera -->
+        <div class="col-md-3">
+          <label class="form-label fw-semibold">Camera</label>
+          <select
+            class="form-select"
+            [(ngModel)]="filters.camera"
+            (change)="applyFilters()"
+          >
+            <option value="">All Cameras</option>
+            <option *ngFor="let cam of cameras" [value]="cam.id">{{ cam.name }}</option>
+          </select>
+        </div>
+
+        <!-- Event Type -->
+        <div class="col-md-3">
+          <label class="form-label fw-semibold">Event Type</label>
+          <select
+            class="form-select"
+            [(ngModel)]="filters.event_type"
+            (change)="applyFilters()"
+          >
+            <option value="">All Types</option>
+            <option *ngFor="let type of eventTypes" [value]="type.value">
+              {{ type.label }}
+            </option>
+          </select>
+        </div>
+
+        <!-- Status -->
+        <div class="col-md-2">
+          <label class="form-label fw-semibold">Status</label>
+          <select
+            class="form-select"
+            [(ngModel)]="filters.status"
+            (change)="applyFilters()"
+          >
+            <option value="">All</option>
+            <option value="processed">Processed</option>
+            <option value="pending">Pending</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Advanced Filters -->
+      <div class="text-end mt-3">
+        <button
+          class="btn btn-outline-secondary btn-sm"
+          (click)="showAdvanced = !showAdvanced"
+        >
+          <i class="bi" [ngClass]="showAdvanced ? 'bi-chevron-up' : 'bi-funnel'"></i>
+          {{ showAdvanced ? 'Hide Advanced Filters' : 'Advanced Filters' }}
+        </button>
+      </div>
+
+      <div *ngIf="showAdvanced" class="mt-4 border-top pt-3">
+        <div class="row g-3">
+          <div class="col-md-4">
+            <label class="form-label fw-semibold">Confidence (Min)</label>
+            <input
+              type="number"
+              class="form-control"
+              step="0.01"
+              min="0"
+              max="1"
+              [(ngModel)]="filters.minConfidence"
+              (input)="applyFilters()"
+            />
+          </div>
+          <div class="col-md-4">
+            <label class="form-label fw-semibold">Confidence (Max)</label>
+            <input
+              type="number"
+              class="form-control"
+              step="0.01"
+              min="0"
+              max="1"
+              [(ngModel)]="filters.maxConfidence"
+              (input)="applyFilters()"
+            />
+          </div>
+          <div class="col-md-4">
+            <label class="form-label fw-semibold">Date Range</label>
+            <div class="d-flex gap-2">
+              <input
+                type="date"
+                class="form-control"
+                [(ngModel)]="filters.startDate"
+                (change)="applyFilters()"
+              />
+              <input
+                type="date"
+                class="form-control"
+                [(ngModel)]="filters.endDate"
+                (change)="applyFilters()"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Event Cards -->
+  <div *ngIf="!loading && events.length > 0" class="row g-4">
+    <div class="col-md-4" *ngFor="let event of events">
+      <div class="card border-0 shadow-sm rounded-4 h-100">
+        <div class="card-body">
+          <!-- Camera + Type -->
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <h5 class="fw-bold text-primary mb-0">
+              <i class="bi bi-camera-video me-2 text-secondary"></i>
+              Camera #{{ event.camera }}
+            </h5>
+            <span class="badge rounded-pill bg-info bg-opacity-25 text-info px-3 py-2">
+              {{ event.event_type }}
+            </span>
+          </div>
+
+          <!-- Confidence -->
+          <div class="mb-1">
+            <strong>Confidence:</strong>
+            <div class="progress" style="height: 8px;">
+              <div
+                class="progress-bar"
+                role="progressbar"
+                [ngClass]="{
+                  'bg-danger': event.confidence_score < 0.4,
+                  'bg-warning': event.confidence_score >= 0.4 && event.confidence_score < 0.75,
+                  'bg-success': event.confidence_score >= 0.75
+                }"
+                [style.width.%]="event.confidence_score * 100"
+              ></div>
+            </div>
+            <small
+              [ngClass]="{
+                'text-danger': event.confidence_score < 0.4,
+                'text-warning': event.confidence_score >= 0.4 && event.confidence_score < 0.75,
+                'text-success': event.confidence_score >= 0.75
+              }"
+            >
+              {{ event.confidence_score | percent: '1.0-1' }}
+            </small>
+          </div>
+
+          <!-- Date -->
+          <p class="mb-1">
+            <strong>Date:</strong> {{ event.timestamp | date:'short' }}
+          </p>
+
+          <!-- Metadata -->
+          <p class="mb-1">
+            <strong>Metadata:</strong>
+            <code class="text-muted">{{ event.metadata | json }}</code>
+          </p>
+
+          <!-- Processed By -->
+          <p class="mb-1">
+            <strong>Processed By:</strong>
+            <span *ngIf="event.processed_by; else noUser" class="text-success fw-semibold">
+              {{ event.processed_by }}
+            </span>
+            <ng-template #noUser><span class="text-muted">—</span></ng-template>
+          </p>
+
+          <!-- Notes -->
+          <p class="mb-2">
+            <strong>Notes:</strong> {{ event.notes || '—' }}
+          </p>
+
+          <!-- Status + Actions -->
+          <div class="d-flex justify-content-between align-items-center mt-3">
+            <span
+              class="fw-semibold"
+              [ngClass]="{
+                'text-success': event.is_processed,
+                'text-warning': !event.is_processed
+              }"
+            >
+              <i
+                class="bi"
+                [ngClass]="{
+                  'bi-check-circle-fill': event.is_processed,
+                  'bi-clock-history': !event.is_processed
+                }"
+              ></i>
+              {{ event.is_processed ? 'Processed' : 'Pending' }}
+            </span>
+
+            <div>
+              <button
+                class="btn btn-outline-primary btn-sm me-2"
+                (click)="openDetails(event, detailsModal)"
+              >
+                <i class="bi bi-eye"></i> Details
+              </button>
+
+              <button
+                class="btn btn-outline-danger btn-sm"
+                (click)="deleteEvent(event.id)"
+              >
+                <i class="bi bi-trash"></i> Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 📄 Pagination -->
+  <nav *ngIf="events.length" class="d-flex justify-content-center mt-4">
+    <ul class="pagination pagination-sm">
+      <li class="page-item" [class.disabled]="currentPage === 1">
+        <button class="page-link" (click)="prevPage()">Prev</button>
+      </li>
+      <li
+        *ngFor="let p of totalPagesArray"
+        class="page-item"
+        [class.active]="p === currentPage"
+      >
+        <button class="page-link" (click)="goToPage(p)">{{ p }}</button>
+      </li>
+      <li class="page-item" [class.disabled]="currentPage === totalPages">
+        <button class="page-link" (click)="nextPage()">Next</button>
+      </li>
+    </ul>
+  </nav>
+</div>
+
+<!-- ✅ MODAL DETAILS -->
+<ng-template #detailsModal let-modal>
+  <div class="modal-header">
+    <h5 class="modal-title text-primary fw-bold">
+      <i class="bi bi-info-circle me-2"></i> Event Details
+    </h5>
+    <button type="button" class="btn-close" (click)="modal.dismiss()"></button>
+  </div>
+
+  <div class="modal-body">
+    <p><strong>ID:</strong> {{ selectedEvent?.id }}</p>
+    <p><strong>Camera:</strong> {{ selectedEvent?.camera }}</p>
+    <p><strong>Type:</strong> {{ selectedEvent?.event_type }}</p>
+    <p><strong>Date:</strong> {{ selectedEvent?.timestamp | date:'medium' }}</p>
+    <p><strong>Confidence:</strong> {{ selectedEvent?.confidence_score | percent:'1.0-1' }}</p>
+    <p><strong>Metadata:</strong></p>
+    <pre class="bg-light p-2 rounded">{{ selectedEvent?.metadata | json }}</pre>
+    <p><strong>Processed By:</strong> {{ selectedEvent?.processed_by || '—' }}</p>
+    <p><strong>Notes:</strong> {{ selectedEvent?.notes || '—' }}</p>
+  </div>
+
+  <div class="modal-footer">
+    <button class="btn btn-outline-secondary" (click)="modal.dismiss()">Close</button>
+  </div>
+</ng-template>

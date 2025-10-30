@@ -2,11 +2,12 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { Camera, CameraService } from '../../../backoffice/services/camera.service';
+import { NavbarComponent } from '../../navbar/navbar.component';
 
 @Component({
   selector: 'app-fo-camera-list',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule,NavbarComponent],
   templateUrl: './camera-list.component.html',
   styleUrls: ['./camera-list.component.css'],
 })

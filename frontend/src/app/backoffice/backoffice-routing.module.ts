@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { LayoutComponent } from './layout/layout.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { CameraAccessListComponent } from './components/camera-access-list/camera-access-list.component';
 import { ControlCenterAccessListComponent } from './components/control-center-access-list/control-center-access-list.component';
@@ -10,10 +11,16 @@ import { ControlCenterComponent } from './control-center/control-center.componen
 const routes: Routes = [
   {
     path: '',
-    component: DashboardComponent,
+    component: LayoutComponent,
     children: [
-      // === Routes enfants ===
-      { path: 'camera-access', component: CameraAccessListComponent },
+      {
+        path: '',
+        loadComponent: () => import('./dashboard/dashboard.component').then(m => m.DashboardComponent),
+      },
+      {
+        path: 'events',
+        loadComponent: () => import('./events/events.component').then(m => m.EventsComponent),
+      }, { path: 'camera-access', component: CameraAccessListComponent },
       { path: 'control-center-access', component: ControlCenterAccessListComponent },
       { path: 'cameras', component: CameraListComponent },
       { path: 'control-center', component: ControlCenterComponent },
@@ -21,8 +28,10 @@ const routes: Routes = [
 
       // Redirection par défaut
       { path: '', redirectTo: 'cameras', pathMatch: 'full' },
-    ],
+    ]
+
   },
+
 ];
 
 @NgModule({

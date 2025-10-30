@@ -4,11 +4,12 @@ import {
   ControlCenter,
 } from '../control-center-front.service';
 import { CommonModule } from '@angular/common';
+import { NavbarComponent } from '../navbar/navbar.component';
 @Component({
   selector: 'app-front-control-centers',
   templateUrl: './front-control-centers.component.html',
   styleUrls: ['./front-control-centers.component.css'],
-  imports: [CommonModule],
+  imports: [CommonModule,NavbarComponent],
 })
 export class FrontControlCentersComponent implements OnInit {
   centers: ControlCenter[] = [];

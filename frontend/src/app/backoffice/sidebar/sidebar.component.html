@@ -1,0 +1,89 @@
+<aside class="sidebar d-flex flex-column" [class.collapsed]="isCollapsed">
+  <!-- Brand -->
+  <div class="brand d-flex align-items-center justify-content-between mb-4">
+    <div class="d-flex align-items-center">
+      <i class="bi bi-shield-lock-fill fs-4 me-2 text-white"></i>
+      <span class="fw-bold fs-5 brand-name" *ngIf="!isCollapsed">SafeGuard</span>
+    </div>
+    <button class="btn btn-sm btn-outline-light toggle-btn" (click)="toggleSidebar()">
+      <i class="bi" [ngClass]="isCollapsed ? 'bi-arrow-right-square' : 'bi-arrow-left-square'"></i>
+    </button>
+  </div>
+
+  <!-- Navigation -->
+  <nav class="flex-grow-1">
+    <ul class="nav flex-column">
+      <li>
+        <a routerLink="" routerLinkActive="active" class="nav-link">
+          <i class="bi bi-speedometer2 me-3"></i>
+          <span *ngIf="!isCollapsed">Dashboard</span>
+        </a>
+      </li>
+      <li>
+        <a routerLink="events" routerLinkActive="active" class="nav-link">
+          <i class="bi bi-bell-fill me-3"></i>
+          <span *ngIf="!isCollapsed">AI Events</span>
+        </a>
+      </li>
+    <li class="nav-item">
+          <a
+            class="nav-link text-white"
+            routerLink="/backoffice/cameras"
+            routerLinkActive="active"
+            >Cameras</a
+          >
+        </li>
+       <li class="nav-item">
+          <a
+            class="nav-link text-white"
+            routerLink="/backoffice/camera-access"
+            routerLinkActive="active"
+            >Camera Access</a
+          >
+        </li>    
+        
+        <li class="nav-item">
+          <a
+            class="nav-link text-white"
+            routerLink="/backoffice/ai-control-centers"
+            routerLinkActive="active"
+          >
+            AI Control Centers
+          </a>
+        </li>   <li class="nav-item">
+          <a
+            class="nav-link text-white"
+            routerLink="/backoffice/control-center"
+            routerLinkActive="active"
+          >
+            Control Centers
+          </a>
+        </li>   <li class="nav-item">
+          <a
+            class="nav-link text-white"
+            routerLink="/backoffice/control-center-access"
+            routerLinkActive="active"
+          >
+            Control Center Access
+          </a>
+      
+     
+    </ul>
+  </nav>
+
+  <!-- User Info -->
+  <div class="user-info mt-auto pt-3">
+    <div class="d-flex align-items-center justify-content-center" *ngIf="!isCollapsed">
+      <div class="user-avatar d-flex align-items-center justify-content-center me-2">
+        <i class="bi bi-person-fill"></i>
+      </div>
+      <div>
+        <div class="fw-semibold">Admin</div>
+        <small class="text-light opacity-75">Security Manager</small>
+      </div>
+    </div>
+    <div class="collapsed-user-icon text-center" *ngIf="isCollapsed">
+      <i class="bi bi-person-fill fs-4"></i>
+    </div>
+  </div>
+</aside>

@@ -1,4 +1,6 @@
 import { Component } from '@angular/core';
+import { NavbarComponent } from '../navbar/navbar.component';
+
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs/operators';
@@ -6,7 +8,7 @@ import { filter } from 'rxjs/operators';
 @Component({
   selector: 'app-main',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule,RouterModule,NavbarComponent],
   templateUrl: './main.component.html',
   styleUrls: ['./main.component.css']
 })

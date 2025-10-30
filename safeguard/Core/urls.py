@@ -1,6 +1,8 @@
 from django.urls import path, include
+from rest_framework import routers
+
+
 from rest_framework.routers import DefaultRouter
-from .views import DashboardView
 from Core.views_control_center import ControlCenterViewSet
 from Core.views_ai_control_center import ai_performance_analysis, ai_recommendations  
 from .views import (
@@ -8,7 +10,7 @@ from .views import (
     CameraViewSet,
     ControlCenterViewSet,
     CameraUserAccessViewSet,
-    ControlCenterUserAccessViewSet
+    ControlCenterUserAccessViewSet,EventViewSet,DashboardView
 )
 
 router = DefaultRouter()
@@ -17,6 +19,7 @@ router.register('cameras', CameraViewSet)
 router.register('controlcenters', ControlCenterViewSet)
 router.register('cameraaccess', CameraUserAccessViewSet)
 router.register('centeraccess', ControlCenterUserAccessViewSet)
+router.register(r'events', EventViewSet, basename='event')
 
 urlpatterns = [
     path('api/', include(router.urls)),
