@@ -19,11 +19,6 @@ export class MainComponent {
       .subscribe((event: NavigationEnd) => {
         this.showHomeContent = !event.urlAfterRedirects.includes('/cameras');
       });
-    
-    // Vérifier la route initiale
     this.showHomeContent = !this.router.url.includes('/cameras');
   }
 }
-  styleUrl: './main.component.css',
-})
-export class MainComponent {}
