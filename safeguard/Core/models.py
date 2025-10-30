@@ -50,7 +50,7 @@ class Camera(models.Model):
     location = models.CharField(max_length=200, blank=True)
     stream_url = models.CharField(max_length=255)  # RTSP, HTTP, etc.
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='offline')
-    owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='owned_cameras')
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='owned_cameras', null=True, blank=True, default=None)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
@@ -64,7 +64,7 @@ class ControlCenter(models.Model):
     name = models.CharField(max_length=100)
     location = models.CharField(max_length=200, blank=True)
     description = models.TextField(blank=True)
-    owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='control_centers')
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='control_centers', null=True, blank=True)
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
 

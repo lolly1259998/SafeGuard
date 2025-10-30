@@ -25,18 +25,49 @@
           <span *ngIf="!isCollapsed">AI Events</span>
         </a>
       </li>
-      <li>
-        <a routerLink="/alerts" routerLinkActive="active" class="nav-link">
-          <i class="bi bi-exclamation-triangle-fill me-3"></i>
-          <span *ngIf="!isCollapsed">Alerts</span>
-        </a>
-      </li>
-      <li>
-        <a routerLink="/settings" routerLinkActive="active" class="nav-link">
-          <i class="bi bi-gear-fill me-3"></i>
-          <span *ngIf="!isCollapsed">Settings</span>
-        </a>
-      </li>
+    <li class="nav-item">
+          <a
+            class="nav-link text-white"
+            routerLink="/backoffice/cameras"
+            routerLinkActive="active"
+            >Cameras</a
+          >
+        </li>
+       <li class="nav-item">
+          <a
+            class="nav-link text-white"
+            routerLink="/backoffice/camera-access"
+            routerLinkActive="active"
+            >Camera Access</a
+          >
+        </li>    
+        
+        <li class="nav-item">
+          <a
+            class="nav-link text-white"
+            routerLink="/backoffice/ai-control-centers"
+            routerLinkActive="active"
+          >
+            AI Control Centers
+          </a>
+        </li>   <li class="nav-item">
+          <a
+            class="nav-link text-white"
+            routerLink="/backoffice/control-center"
+            routerLinkActive="active"
+          >
+            Control Centers
+          </a>
+        </li>   <li class="nav-item">
+          <a
+            class="nav-link text-white"
+            routerLink="/backoffice/control-center-access"
+            routerLinkActive="active"
+          >
+            Control Center Access
+          </a>
+      
+     
     </ul>
   </nav>
 

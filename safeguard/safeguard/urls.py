@@ -24,6 +24,7 @@ urlpatterns = [
     path('dashboard/', include('Core.urls')),
     path('api/', include('Core.urls')),       
 
+    path('', include('Core.urls'))
 ]
 # Events Settigns
 if settings.DEBUG:
