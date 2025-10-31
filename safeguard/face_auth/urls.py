@@ -1,4 +1,4 @@
-# backend/face_auth/urls.py
+# face_auth/urls.py
 from django.urls import path
 from . import views
 

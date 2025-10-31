@@ -23,7 +23,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('dashboard/', include('Core.urls')),
     path('api/', include('Core.urls')),       
-path('api/face/', include('face_auth.urls')), 
+path('api/face/', include('face_auth.urls')),  # ← OK
     path('', include('Core.urls'))
 ]
 # Events Settigns
