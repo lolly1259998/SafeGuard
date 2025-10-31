@@ -7,7 +7,6 @@ import { EventFrontComponent } from './event-front/event-front.component';
 import { FoCameraListComponent } from './components/camera-list/camera-list.component';
 import { VideoPlayerComponent } from './components/video-player/video-player.component';
 import { FrontControlCentersComponent } from './front-control-centers/front-control-centers.component';
-import { FaceAuthComponent } from './face-auth/face-auth/face-auth.component';
 
 const routes: Routes = [
   {
@@ -33,7 +32,6 @@ const routes: Routes = [
       { path: 'my-cameras-access', component: MyCameraAccessComponent },
       { path: 'my-centers-access', component: MyControlCenterAccessComponent },
 
-      { path: 'authface', component: FaceAuthComponent },
 
 
   
