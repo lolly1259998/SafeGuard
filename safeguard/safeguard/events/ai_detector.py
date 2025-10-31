@@ -58,7 +58,7 @@ while True:
                 "confidence_score": confidence,
                 "metadata": json.dumps({
                     "object_class": label,
-                    "zone": "Entrée principale"
+                    "zone": "Plateau123"
                 })
             }
 
