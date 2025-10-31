@@ -70,6 +70,18 @@ export class EventsComponent implements OnInit {
       error: (err) => console.error('Error loading cameras:', err),
     });
   }
+getSnapshotUrl(snapshot: string): string {
+  if (!snapshot) return '';
+  // Si le backend renvoie une URL complète
+  if (snapshot.startsWith('http')) return snapshot;
+  // Sinon on préfixe manuellement
+  return 'http://127.0.0.1:8000' + snapshot;
+}
+
+openImageModal(imageUrl: string): void {
+  if (imageUrl) window.open(imageUrl, '_blank');
+}
+
 
   loadUsers(): void {
     this.eventService.getUsers().subscribe({
@@ -197,18 +209,32 @@ export class EventsComponent implements OnInit {
     this.selectedEvent = { ...event };
     this.modalService.open(this.editEventModal, { centered: true, size: 'lg' });
   }
+updateEvent() {
+  if (!this.selectedEvent) return;
 
-  updateEvent(): void {
-    if (!this.selectedEvent) return;
-    this.eventService.updateEvent(this.selectedEvent.id, this.selectedEvent).subscribe({
-      next: () => {
-        alert('✏️ Event updated successfully!');
-        this.loadEvents();
-        this.modalService.dismissAll();
-      },
-      error: (err) => console.error('Erreur lors de la mise à jour:', err),
-    });
+  const payload: any = {
+    camera: this.selectedEvent.camera,
+    event_type: this.selectedEvent.event_type,
+    confidence_score: this.selectedEvent.confidence_score,
+    is_processed: this.selectedEvent.is_processed,
+    notes: this.selectedEvent.notes,
+    metadata: this.selectedEvent.metadata,
+  };
+
+  if (this.selectedEvent.processed_by?.id) {
+    payload.processed_by_id = this.selectedEvent.processed_by.id;
   }
+
+  this.eventService.updateEvent(this.selectedEvent.id, payload).subscribe({
+    next: () => {
+      this.modalService.dismissAll();
+      this.loadEvents();
+      alert('✅ Event updated successfully!');
+    },
+    error: (err) => console.error('Erreur lors de la mise à jour:', err)
+  });
+}
+
 
   parseMetadata(metadata: any): any {
     try {

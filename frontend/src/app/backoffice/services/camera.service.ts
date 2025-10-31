@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { catchError, map } from 'rxjs/operators';
 
 export interface Camera {
   id?: number;
@@ -20,7 +20,20 @@ export class CameraService {
   constructor(private http: HttpClient) {}
 
   list(): Observable<Camera[]> {
-    return this.http.get<Camera[]>(this.base).pipe(catchError(this.handleError));
+    return this.http.get<any>(this.base).pipe(
+      catchError(this.handleError),
+      map((response: any) => {
+        // Gérer la pagination Django REST Framework ou réponse directe
+        if (Array.isArray(response)) {
+          return response;
+        } else if (response && Array.isArray(response.results)) {
+          return response.results;
+        } else if (response && typeof response === 'object') {
+          return [response];
+        }
+        return [];
+      })
+    );
   }
 
   get(id: number): Observable<Camera> {

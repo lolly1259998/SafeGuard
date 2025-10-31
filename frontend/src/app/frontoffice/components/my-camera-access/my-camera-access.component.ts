@@ -23,11 +23,13 @@ export class MyCameraAccessComponent implements OnInit {
   loadMyCameraAccess(): void {
     this.accessService.getMyCameraAccess().subscribe({
       next: (accesses) => {
-        this.cameraAccesses = accesses;
+        // Protection: s'assurer que accesses est toujours un tableau
+        this.cameraAccesses = Array.isArray(accesses) ? accesses : [];
         this.isLoading = false;
       },
       error: (err) => {
         this.error = err.message;
+        this.cameraAccesses = [];
         this.isLoading = false;
       }
     });

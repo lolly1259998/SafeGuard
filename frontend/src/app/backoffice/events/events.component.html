@@ -1,4 +1,4 @@
-<<div class="content-wrapper py-4 px-3">
+<div class="content-wrapper py-4 px-3">
   <div class="card shadow-sm border-0 rounded-4">
     <div class="card-header d-flex justify-content-between align-items-center bg-white border-0">
       <h4 class="fw-bold text-primary m-0">
@@ -83,10 +83,9 @@
               <th>Date</th>
               <th>Confidence</th>
               <th>Metadata</th>
-                  <th>Image</th> 
+              <th>Image</th> 
 
               <th>Notes</th>
-              <th>Processed By</th>
               <th>Status</th>
               <th>Action</th>
             </tr>
@@ -143,23 +142,29 @@
                 <div *ngIf="!e.metadata">—</div>
               </td>
 <td>
-      <img
-        *ngIf="e.snapshot"
-        [src]="'http://127.0.0.1:8000' + e.snapshot"
-        alt="snapshot"
-        width="100"
-        class="rounded shadow-sm"
-      />
-      <span *ngIf="!e.snapshot" class="text-muted small">No image</span>
-    </td>
+  <img
+    *ngIf="e.snapshot"
+    [src]="getSnapshotUrl(e.snapshot)"
+    alt="snapshot"
+    width="120"
+    height="80"
+    class="rounded shadow-sm border"
+    (click)="openImageModal(getSnapshotUrl(e.snapshot))"
+    style="cursor: pointer"
+  />
+  <span *ngIf="!e.snapshot" class="text-muted small">No image</span>
+</td>
+
+
+
               <!-- ✅ Notes -->
               <td>{{ e.notes || '—' }}</td>
 
-              <!-- ✅ Processed By -->
+              <!-- ✅ Processed By 
               <td>
                 <span *ngIf="e.processed_by; else noUser">User ID: {{ e.processed_by }}</span>
                 <ng-template #noUser>—</ng-template>
-              </td>
+              </td>-->
 
               <!-- ✅ Status -->
               <td>
@@ -275,15 +280,7 @@
         <input type="checkbox" class="form-check-input" [(ngModel)]="newEvent.is_processed" name="is_processed" />
         <label class="form-check-label">Processed</label>
       </div>
-<div class="mb-3">
-  <label class="form-label">Processed by</label>
-  <select class="form-select" [(ngModel)]="newEvent.processed_by" name="processed_by">
-    <option value="">Select a user...</option>
-    <option *ngFor="let user of users" [value]="user.id">
-      {{ user.username }}
-    </option>
-  </select>
-</div>
+
 
       <div class="mb-3">
         <label class="form-label">Notes</label>
@@ -361,7 +358,7 @@
         </small>
       </div>
 
-      <!-- 🧍‍♂️ Processed By -->
+      <!-- 🧍‍♂️ Processed By 
       <div class="mb-3">
         <label class="form-label">Processed By</label>
         <select class="form-select" [(ngModel)]="selectedEvent.processed_by" name="processed_by">
@@ -370,7 +367,7 @@
             {{ user.username }}
           </option>
         </select>
-      </div>
+      </div>-->
 
       <!-- 🗒️ Notes -->
       <div class="mb-3">

@@ -27,11 +27,14 @@ export class FrontControlCentersComponent implements OnInit {
     this.loading = true;
     this.service.getAll().subscribe({
       next: (data) => {
-        this.centers = data;
+        // Protection: s'assurer que data est toujours un tableau
+        this.centers = Array.isArray(data) ? data : [];
         this.loading = false;
+        this.errorMessage = '';
       },
       error: (err) => {
         this.errorMessage = 'Erreur lors du chargement des centres';
+        this.centers = [];
         this.loading = false;
       },
     });

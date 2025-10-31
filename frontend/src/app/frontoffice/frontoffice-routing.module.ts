@@ -1,3 +1,4 @@
+// src/app/frontoffice/frontoffice-routing.module.ts
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { MainComponent } from './main/main.component';
@@ -14,31 +15,45 @@ const routes: Routes = [
     component: MainComponent,
     children: [
       { path: '', redirectTo: 'main', pathMatch: 'full' },
- 
     ],
   },
-   { 
+  { 
     path: 'home', 
-    component: MainComponent },
+    component: MainComponent 
+  },
   {
     path: 'control-centersFront',
     component: FrontControlCentersComponent,
   },
   { 
     path: 'eventsFront', 
-    component: EventFrontComponent },
-    { path: 'camerasFront', component: FoCameraListComponent },
-    { path: 'camerasFront/:id/play', component: VideoPlayerComponent },   
-      { path: 'my-cameras-access', component: MyCameraAccessComponent },
-      { path: 'my-centers-access', component: MyControlCenterAccessComponent },
-
-
-
-  
+    component: EventFrontComponent 
+  },
+  { 
+    path: 'camerasFront', 
+    component: FoCameraListComponent 
+  },
+  { 
+    path: 'camerasFront/:id/play', 
+    component: VideoPlayerComponent 
+  },
+  { 
+    path: 'my-cameras-access', 
+    component: MyCameraAccessComponent 
+  },
+  { 
+    path: 'my-centers-access', 
+    component: MyControlCenterAccessComponent 
+  },
+  {
+    path: 'scenarios',
+    loadChildren: () =>
+      import('./scenarios/scenarios.module').then(m => m.ScenariosModule)
+  }
 ];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule],
+  exports: [RouterModule]
 })
 export class FrontofficeRoutingModule {}

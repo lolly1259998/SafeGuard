@@ -1,0 +1,80 @@
+/* src/app/frontoffice/scenario-card/scenario-card.component.css */
+.scenario-card {
+  transition: all 0.3s ease;
+  border: 1px solid #e9ecef;
+}
+
+.scenario-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(0, 123, 255, 0.15) !important;
+  border-color: #007bff;
+}
+
+.card-title {
+  font-size: 1.1rem;
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.badge {
+  font-size: 0.7rem;
+  font-weight: 500;
+  padding: 0.35em 0.65em;
+}
+
+.scenario-details {
+  flex: 1;
+}
+
+.detail-item {
+  display: flex;
+  align-items: flex-start;
+}
+
+.detail-item i {
+  margin-top: 0.1rem;
+  flex-shrink: 0;
+}
+
+.view-scenario-btn {
+  transition: all 0.2s ease;
+  font-weight: 500;
+}
+
+.view-scenario-btn:hover {
+  background-color: #007bff;
+  color: white;
+  transform: translateY(-1px);
+}
+
+/* Priority badge specific styles */
+.badge.bg-warning {
+  color: #000 !important;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .scenario-card {
+    margin-bottom: 1rem;
+  }
+  
+  .card-title {
+    font-size: 1rem;
+  }
+  
+  .detail-item {
+    font-size: 0.9rem;
+  }
+}
+
+/* Ensure text doesn't overflow */
+.text-secondary {
+  word-wrap: break-word;
+}
+
+.small {
+  font-size: 0.85rem;
+}

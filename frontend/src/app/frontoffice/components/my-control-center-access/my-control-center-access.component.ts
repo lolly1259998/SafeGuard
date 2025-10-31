@@ -23,11 +23,13 @@ export class MyControlCenterAccessComponent implements OnInit {
   loadMyCenterAccess(): void {
     this.accessService.getMyControlCenterAccess().subscribe({
       next: (accesses) => {
-        this.centerAccesses = accesses;
+        // Protection: s'assurer que accesses est toujours un tableau
+        this.centerAccesses = Array.isArray(accesses) ? accesses : [];
         this.isLoading = false;
       },
       error: (err) => {
         this.error = err.message;
+        this.centerAccesses = [];
         this.isLoading = false;
       }
     });

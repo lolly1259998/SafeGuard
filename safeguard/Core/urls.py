@@ -11,7 +11,10 @@ from .views import (
     CameraViewSet,
     ControlCenterViewSet,
     CameraUserAccessViewSet,
-    ControlCenterUserAccessViewSet,EventViewSet,DashboardView
+    ControlCenterUserAccessViewSet,
+    EventViewSet,
+    DashboardView,
+    SecurityScenarioViewSet
 )
 
 router = DefaultRouter()
@@ -20,10 +23,7 @@ router.register('cameras', CameraViewSet)
 router.register('controlcenters', ControlCenterViewSet)
 router.register('cameraaccess', CameraUserAccessViewSet)
 router.register('centeraccess', ControlCenterUserAccessViewSet)
-
-
-
-
+router.register('securityscenarios', SecurityScenarioViewSet)
 router.register(r'events', EventViewSet, basename='event')
 
 urlpatterns = [

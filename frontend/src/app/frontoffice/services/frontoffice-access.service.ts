@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { catchError, map } from 'rxjs/operators';
 
 export interface CameraAccess {
   id?: number;
@@ -37,14 +37,40 @@ export class FrontofficeAccessService {
   // CHANGEMENT ICI
   getMyCameraAccess(): Observable<CameraAccess[]> {
     return this.http
-      .get<CameraAccess[]>(`${this.base}/cameraaccess/`)  // ← CORRECT
-      .pipe(catchError(this.handleError));
+      .get<any>(`${this.base}/cameraaccess/`)  // ← CORRECT
+      .pipe(
+        map((response: any) => {
+          // Gérer la pagination Django REST Framework ou réponse directe
+          if (Array.isArray(response)) {
+            return response;
+          } else if (response && Array.isArray(response.results)) {
+            return response.results;
+          } else if (response && typeof response === 'object') {
+            return [response];
+          }
+          return [];
+        }),
+        catchError(this.handleError)
+      );
   }
 
   getMyControlCenterAccess(): Observable<ControlCenterAccess[]> {
     return this.http
-      .get<ControlCenterAccess[]>(`${this.base}/centeraccess/`)  // ← CORRECT
-      .pipe(catchError(this.handleError));
+      .get<any>(`${this.base}/centeraccess/`)  // ← CORRECT
+      .pipe(
+        map((response: any) => {
+          // Gérer la pagination Django REST Framework ou réponse directe
+          if (Array.isArray(response)) {
+            return response;
+          } else if (response && Array.isArray(response.results)) {
+            return response.results;
+          } else if (response && typeof response === 'object') {
+            return [response];
+          }
+          return [];
+        }),
+        catchError(this.handleError)
+      );
   }
 
   // handleError reste inchangé

@@ -2,7 +2,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { catchError, map } from 'rxjs/operators';
 
 // ==================== INTERFACES ====================
 
@@ -48,8 +48,22 @@ export class AccessService {
   // ---------- CAMERAS ----------
   getCameraAccess(): Observable<CameraAccess[]> {
     return this.http
-      .get<CameraAccess[]>(`${this.base}/cameraaccess/`)
-      .pipe(catchError(this.handleError));
+      .get<any>(`${this.base}/cameraaccess/`)
+      .pipe(
+        catchError(this.handleError),
+        map((response: any) => {
+          // Gérer la pagination Django REST Framework ou réponse directe
+          if (Array.isArray(response)) {
+            return response;
+          } else if (response && Array.isArray(response.results)) {
+            return response.results;
+          } else if (response && typeof response === 'object') {
+            // Si c'est un objet unique, le convertir en tableau
+            return [response];
+          }
+          return [];
+        })
+      );
   }
 
   addCameraAccess(payload: Partial<CameraAccess>): Observable<CameraAccess> {
@@ -73,8 +87,20 @@ export class AccessService {
   // ---------- CONTROL CENTERS ----------
   getControlCenterAccess(): Observable<ControlCenterAccess[]> {
     return this.http
-      .get<ControlCenterAccess[]>(`${this.base}/centeraccess/`)
-      .pipe(catchError(this.handleError));
+      .get<any>(`${this.base}/centeraccess/`)
+      .pipe(
+        catchError(this.handleError),
+        map((response: any) => {
+          if (Array.isArray(response)) {
+            return response;
+          } else if (response && Array.isArray(response.results)) {
+            return response.results;
+          } else if (response && typeof response === 'object') {
+            return [response];
+          }
+          return [];
+        })
+      );
   }
 
   addControlCenterAccess(payload: Partial<ControlCenterAccess>): Observable<ControlCenterAccess> {
@@ -98,20 +124,56 @@ export class AccessService {
   // ---------- LISTES ----------
   getUsers(): Observable<{ id: number; username: string }[]> {
     return this.http
-      .get<{ id: number; username: string }[]>(`${this.base}/users/`)
-      .pipe(catchError(this.handleError));
+      .get<any>(`${this.base}/users/`)
+      .pipe(
+        catchError(this.handleError),
+        map((response: any) => {
+          if (Array.isArray(response)) {
+            return response;
+          } else if (response && Array.isArray(response.results)) {
+            return response.results;
+          } else if (response && typeof response === 'object') {
+            return [response];
+          }
+          return [];
+        })
+      );
   }
 
   getCameras(): Observable<{ id: number; name: string }[]> {
     return this.http
-      .get<{ id: number; name: string }[]>(`${this.base}/cameras/`)
-      .pipe(catchError(this.handleError));
+      .get<any>(`${this.base}/cameras/`)
+      .pipe(
+        catchError(this.handleError),
+        map((response: any) => {
+          if (Array.isArray(response)) {
+            return response;
+          } else if (response && Array.isArray(response.results)) {
+            return response.results;
+          } else if (response && typeof response === 'object') {
+            return [response];
+          }
+          return [];
+        })
+      );
   }
 
   getControlCenters(): Observable<{ id: number; name: string }[]> {
     return this.http
-      .get<{ id: number; name: string }[]>(`${this.base}/controlcenters/`)
-      .pipe(catchError(this.handleError));
+      .get<any>(`${this.base}/controlcenters/`)
+      .pipe(
+        catchError(this.handleError),
+        map((response: any) => {
+          if (Array.isArray(response)) {
+            return response;
+          } else if (response && Array.isArray(response.results)) {
+            return response.results;
+          } else if (response && typeof response === 'object') {
+            return [response];
+          }
+          return [];
+        })
+      );
   }
 
   // ---------- GESTION DES ERREURS ----------

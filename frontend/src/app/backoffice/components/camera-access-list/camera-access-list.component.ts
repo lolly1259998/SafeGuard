@@ -33,24 +33,48 @@ export class CameraAccessListComponent implements OnInit {
 
   ngOnInit(): void {
     // Charger d'abord users et cameras, puis les accès
-    this.accessService.getUsers().subscribe(u => {
-      this.users = u;
-      this.accessService.getCameras().subscribe(c => {
-        this.cameras = c;
-        this.reload(); // après avoir les 2 listes
-      });
+    this.accessService.getUsers().subscribe({
+      next: (u) => {
+        this.users = Array.isArray(u) ? u : [];
+        this.accessService.getCameras().subscribe({
+          next: (c) => {
+            this.cameras = Array.isArray(c) ? c : [];
+            this.reload(); // après avoir les 2 listes
+          },
+          error: (err) => {
+            console.error('Error loading cameras:', err);
+            this.cameras = [];
+          }
+        });
+      },
+      error: (err) => {
+        console.error('Error loading users:', err);
+        this.users = [];
+      }
     });
   }
 
   // === MÉTHODES CRUD EXISTANTES (INTACTES) ===
   reload(): void {
-    this.accessService.getCameraAccess().subscribe(data => {
-      // enrichir chaque accès avec les noms
-      this.accesses = data.map(a => ({
-        ...a,
-        user_username: this.users.find(u => u.id === a.user)?.username || 'Inconnu',
-        camera_name: this.cameras.find(c => c.id === a.camera)?.name || 'Inconnue'
-      }));
+    this.accessService.getCameraAccess().subscribe({
+      next: (data) => {
+        // Protection: s'assurer que data est un tableau
+        if (!Array.isArray(data)) {
+          console.warn('Expected array but got:', typeof data, data);
+          this.accesses = [];
+          return;
+        }
+        // enrichir chaque accès avec les noms
+        this.accesses = data.map(a => ({
+          ...a,
+          user_username: this.users.find(u => u.id === a.user)?.username || 'Inconnu',
+          camera_name: this.cameras.find(c => c.id === a.camera)?.name || 'Inconnue'
+        }));
+      },
+      error: (err) => {
+        console.error('Error loading camera access:', err);
+        this.accesses = [];
+      }
     });
   }
 
