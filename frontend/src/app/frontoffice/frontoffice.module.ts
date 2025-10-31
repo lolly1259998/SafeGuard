@@ -17,8 +17,9 @@ import { FrontControlCentersComponent } from './front-control-centers/front-cont
     FrontofficeRoutingModule,
     MainComponent,
     EventFrontComponent,
-    NavbarComponent,
-    FrontControlCentersComponent,
+    RouterModule,NavbarComponent,    FrontControlCentersComponent,
+
+
   ],
 })
 export class FrontofficeModule {}

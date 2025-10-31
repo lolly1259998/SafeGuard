@@ -13,7 +13,9 @@ export interface Event {
   confidence_score: number;
   is_processed: boolean;
   notes: string;
-  metadata?: string;          
+  metadata?: string;   
+         snapshot?: string;      
+  snapshot_url?: string;
   processed_by?: number | {   
     id: number;
     username: string;
@@ -70,11 +72,9 @@ export class EventService {
   }
 
   // 🔹 Modifier un événement
-  updateEvent(id: number, data: any): Observable<Event> {
-    return this.http.put<Event>(`${this.apiUrl}${id}/`, data).pipe(
-      tap(() => this.showMessage('✏️ Event successfully updated!'))
-    );
-  }
+updateEvent(id: number, data: any): Observable<any> {
+  return this.http.patch(`${this.apiUrl}${id}/`, data);
+}
 
   // 🔹 Supprimer un événement
   deleteEvent(id: number): Observable<void> {

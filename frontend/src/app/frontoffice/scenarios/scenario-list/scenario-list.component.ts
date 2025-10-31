@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { ScenarioCardComponent } from '../scenario-card/scenario-card.component';
 import { ScenarioService, SecurityScenario } from '../../services/scenario.service';
+import { NavbarComponent } from '../../navbar/navbar.component';
 
 @Component({
   selector: 'app-scenario-list',
@@ -11,7 +12,7 @@ import { ScenarioService, SecurityScenario } from '../../services/scenario.servi
   imports: [
     CommonModule,
     RouterLink,
-    ScenarioCardComponent   // ← REQUIRED
+    ScenarioCardComponent ,    NavbarComponent,
   ],
   templateUrl: './scenario-list.component.html',
   styleUrl: './scenario-list.component.css'

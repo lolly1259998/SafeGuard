@@ -17,6 +17,16 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class EventSerializer(serializers.ModelSerializer):
+    snapshot = serializers.ImageField(required=False, allow_null=True)
+    metadata = serializers.JSONField(required=False)
+    processed_by = UserSerializer(read_only=True)  # lecture
+    processed_by_id = serializers.PrimaryKeyRelatedField(
+        queryset=User.objects.all(),
+        source='processed_by',
+        write_only=True,
+        required=False,
+        allow_null=True
+    )
     class Meta:
         model = Event
         fields = '__all__'

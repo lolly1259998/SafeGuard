@@ -23,7 +23,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('dashboard/', include('Core.urls')),
     path('api/', include('Core.urls')),       
-
     path('', include('Core.urls'))
 ]
 # Events Settigns
