@@ -56,8 +56,13 @@ selectedEvent: any = null;
   }
 loadCameras(): void {
     this.eventService.getCameras().subscribe({
-      next: (data) => this.cameras = data,
-      error: (err) => console.error('Error loading cameras:', err)
+      next: (data) => {
+        this.cameras = Array.isArray(data) ? data : [];
+      },
+      error: (err) => {
+        console.error('Error loading cameras:', err);
+        this.cameras = [];
+      }
     });
   }
   /** 🟢 Ouvre le modal Angular */
@@ -70,10 +75,12 @@ loadCameras(): void {
     this.eventService.getEvents().subscribe({
       next: (data: Event[]) => {
         console.log('Événements reçus:', data);
-        this.events = data;
+        // Protection: s'assurer que data est toujours un tableau
+        this.events = Array.isArray(data) ? data : [];
       },
       error: (err: any) => {
         console.error('Erreur de chargement:', err);
+        this.events = [];
       }
     });
   }
@@ -103,11 +110,16 @@ loadCameras(): void {
   }
 
   loadUsers(): void {
-  this.eventService.getUsers().subscribe({
-    next: (data) => this.users = data,
-    error: (err) => console.error('Error loading users:', err)
-  });
-}
+    this.eventService.getUsers().subscribe({
+      next: (data) => {
+        this.users = Array.isArray(data) ? data : [];
+      },
+      error: (err) => {
+        console.error('Error loading users:', err);
+        this.users = [];
+      }
+    });
+  }
 
 deleteEvent(id: number): void {
   if (!id) return;

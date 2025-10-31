@@ -51,10 +51,10 @@ routes backoffice:
 http://localhost:4200/backoffice/control-center-access
 http://localhost:4200/backoffice/camera-access
 
-
 http://localhost:8000/api/ai/model-info/
 http://localhost:4200/front/my-cameras-access
 http://localhost:4200/front/my-centers-access
-routes backoffice:
-http://localhost:4200/backoffice/control-center-access
-http://localhost:4200/backoffice/camera-access
+
+For IA Dashboard Feature (Chart.js Visualizations):
+
+npm install chart.js ng2-charts --legacy-peer-deps

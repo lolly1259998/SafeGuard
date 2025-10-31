@@ -2,7 +2,7 @@ Django==4.2
 python-dotenv==1.0.0
 djangorestframework==3.14.0
 gunicorn==21.2.0
-psycopg2-binary==2.9.9
-Pillow==10.3.0
+# psycopg2-binary==2.9.9  # Comment for dev (SQLite); uncomment for Postgres prod
+Pillow==12.0.0  # Updated for Python 3.13 compatibility (was 10.3.0)
 django-cors-headers==4.3.1
 django-environ==0.11.2

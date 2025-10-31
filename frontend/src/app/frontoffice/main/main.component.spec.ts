@@ -1,23 +1,37 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+// src/app/frontoffice/main/main.component.ts
+import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { RouterLink } from '@angular/router';
+import { ScenarioCardComponent } from '../scenarios/scenario-card/scenario-card.component';
+import { ScenarioService, SecurityScenario } from '../services/scenario.service';
 
-import { MainComponent } from './main.component';
+@Component({
+  selector: 'app-main',
+  standalone: true,
+  imports: [
+    CommonModule,
+    RouterLink,
+  ],
+  templateUrl: './main.component.html',
+  styleUrl: './main.component.css'
+})
+export class MainComponent implements OnInit {
+  scenarios: SecurityScenario[] = [];
+  loading = true;
+  error = false;
 
-describe('MainComponent', () => {
-  let component: MainComponent;
-  let fixture: ComponentFixture<MainComponent>;
+  constructor(private scenarioService: ScenarioService) {}
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [MainComponent]
-    })
-    .compileComponents();
-
-    fixture = TestBed.createComponent(MainComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
-
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
-});
+  ngOnInit(): void {
+    this.scenarioService.getScenarios().subscribe({
+      next: (data) => {
+        this.scenarios = data;
+        this.loading = false;
+      },
+      error: () => {
+        this.error = true;
+        this.loading = false;
+      }
+    });
+  }
+}

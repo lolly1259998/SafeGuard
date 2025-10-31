@@ -50,7 +50,16 @@
     ></button>
   </div>
 
-  <div class="row g-4">
+  <!-- Message si aucun centre -->
+  <div *ngIf="!loading && !errorMessage && centers.length === 0" class="text-center py-5">
+    <div class="alert alert-info">
+      <div style="font-size: 3rem; margin-bottom: 1rem;">🏢</div>
+      <h5>Aucun centre de contrôle disponible</h5>
+      <p class="text-muted mb-0">Il n'y a actuellement aucun centre de contrôle à afficher.</p>
+    </div>
+  </div>
+
+  <div class="row g-4" *ngIf="!loading && centers.length > 0">
     <div class="col-xl-4 col-md-6" *ngFor="let c of centers">
       <div class="card control-center-card h-100 shadow-sm border-0">
         <div class="card-header bg-transparent border-0 pt-4 pb-0">

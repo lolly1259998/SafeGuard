@@ -1,0 +1,63 @@
+/* src/app/frontoffice/scenarios/scenario-list/scenario-list.component.css */
+.scenario-list-container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f8f9ff 0%, #f0f4ff 100%);
+}
+
+.max-w-800 {
+  max-width: 800px;
+}
+
+.max-w-600 {
+  max-width: 600px;
+}
+
+.navbar-brand {
+  background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.empty-state {
+  padding: 3rem 1rem;
+}
+
+/* Card hover effects */
+.col-md-6 col-lg-4 {
+  transition: transform 0.2s ease-in-out;
+}
+
+.col-md-6 col-lg-4:hover {
+  transform: translateY(-2px);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .scenario-list-container .container {
+    padding-left: 15px;
+    padding-right: 15px;
+  }
+  
+  .display-5 {
+    font-size: 2rem;
+  }
+}
+
+/* Custom scrollbar for webkit browsers */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}

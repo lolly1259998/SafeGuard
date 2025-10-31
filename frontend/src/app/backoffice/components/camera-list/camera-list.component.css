@@ -1,2 +1,44 @@
-.container { max-width: 1200px; }
-code { white-space: nowrap; }
+.container { 
+  max-width: 1400px; 
+}
+
+code { 
+  white-space: nowrap;
+  font-size: 0.85rem;
+  padding: 0.2rem 0.4rem;
+  background-color: #f8f9fa;
+  border-radius: 3px;
+}
+
+.table-responsive {
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.table thead th {
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.85rem;
+  letter-spacing: 0.5px;
+}
+
+.table tbody tr:hover {
+  background-color: #f8f9fa;
+  transition: background-color 0.2s;
+}
+
+.badge {
+  padding: 0.4rem 0.8rem;
+  font-weight: 500;
+}
+
+.btn-sm {
+  padding: 0.25rem 0.75rem;
+  font-size: 0.875rem;
+}
+
+.spinner-border {
+  width: 3rem;
+  height: 3rem;
+}

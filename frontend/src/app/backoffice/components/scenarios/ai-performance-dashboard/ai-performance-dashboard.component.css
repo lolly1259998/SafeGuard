@@ -1,0 +1,91 @@
+/* src/app/frontoffice/ai-dashboard/ai-dashboard.component.css */
+.ai-performance-dashboard {
+  background: linear-gradient(135deg, #f8f9ff 0%, #f0f4ff 100%);
+  min-height: 100vh;
+  padding: 1.5rem;
+}
+
+.card {
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.card-header {
+  border-bottom: 1px solid rgba(0,0,0,0.125);
+}
+
+.metric-card {
+  background: white;
+  border-radius: 8px;
+  transition: transform 0.2s ease;
+}
+
+.metric-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.detail-item {
+  padding: 0.5rem 0;
+}
+
+.recos-section {
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.insights-section {
+  max-height: 250px;
+  overflow-y: auto;
+}
+
+/* Custom scrollbar */
+.recos-section::-webkit-scrollbar,
+.insights-section::-webkit-scrollbar {
+  width: 6px;
+}
+
+.recos-section::-webkit-scrollbar-track,
+.insights-section::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 3px;
+}
+
+.recos-section::-webkit-scrollbar-thumb,
+.insights-section::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 3px;
+}
+
+.recos-section::-webkit-scrollbar-thumb:hover,
+.insights-section::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+
+/* Progress bar animations */
+.progress-bar {
+  transition: width 0.6s ease;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .ai-performance-dashboard {
+    padding: 1rem;
+  }
+  
+  .dashboard-header .d-flex {
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .display-4 {
+    font-size: 2rem;
+  }
+}
+
+/* Badge styles */
+.badge {
+  font-size: 0.75rem;
+  font-weight: 500;
+  padding: 0.4em 0.8em;
+}

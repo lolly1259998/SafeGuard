@@ -29,8 +29,15 @@ export class ControlCenterComponent implements OnInit {
   }
 
   loadCenters() {
-    this.service.getAll().subscribe((data) => {
-      this.controlCenters = data;
+    this.service.getAll().subscribe({
+      next: (data) => {
+        // Protection: s'assurer que data est toujours un tableau
+        this.controlCenters = Array.isArray(data) ? data : [];
+      },
+      error: (err) => {
+        console.error('Error loading control centers:', err);
+        this.controlCenters = [];
+      }
     });
   }
 
