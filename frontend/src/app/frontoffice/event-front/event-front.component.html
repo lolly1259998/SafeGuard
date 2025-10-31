@@ -17,6 +17,15 @@
   <div *ngIf="error" class="alert alert-danger text-center mt-3">
     {{ error }}
   </div>
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <span class="fw-semibold text-secondary">
+    Showing <span class="text-primary">{{ filteredEvents.length }}</span> of
+    <span class="text-dark">{{ events.length }}</span> total events
+  </span>
+  <span class="badge bg-info text-dark px-3 py-2">
+    <i class="bi bi-bar-chart-fill me-1"></i> Total: {{ events.length }}
+  </span>
+</div>
 
   <!-- No events -->
   <div *ngIf="!loading && events.length === 0" class="text-center text-muted mt-4">
@@ -144,7 +153,7 @@
 
   <!-- Event Cards -->
   <div *ngIf="!loading && events.length > 0" class="row g-4">
-    <div class="col-md-4" *ngFor="let event of events">
+    <div class="col-md-4" *ngFor="let event of paginatedEvents">
       <div class="card border-0 shadow-sm rounded-4 h-100">
         <div class="card-body">
           <!-- Camera + Type -->
@@ -236,12 +245,7 @@
                 <i class="bi bi-eye"></i> Details
               </button>
 
-              <button
-                class="btn btn-outline-danger btn-sm"
-                (click)="deleteEvent(event.id)"
-              >
-                <i class="bi bi-trash"></i> Delete
-              </button>
+         
             </div>
           </div>
         </div>

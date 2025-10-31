@@ -12,7 +12,9 @@ export interface Event {
   confidence_score: number;
   is_processed: boolean;
   notes: string;
-  metadata?: string;          
+  metadata?: string;   
+         snapshot?: string;      
+  snapshot_url?: string;
   processed_by?: number | {   
     id: number;
     username: string;

@@ -1,0 +1,14 @@
+<p>face-auth works!</p>
+<div class="container">
+  <h2>Accès Sécurisé – Reconnaissance Faciale</h2>
+  <input type="file" (change)="onFileChange($event)" accept="image/*" capture="camera" />
+  <button (click)="verify()" [disabled]="loading">Vérifier</button>
+
+  <div *ngIf="loading">Analyse en cours...</div>
+
+  <div *ngIf="result" [ngClass]="result.authorized ? 'success' : 'error'">
+    <p><strong>{{ result.name || 'Inconnu' }}</strong></p>
+    <p>{{ result.message }}</p>
+    <p *ngIf="result.confidence">Confiance: {{ result.confidence }}%</p>
+  </div>
+</div>

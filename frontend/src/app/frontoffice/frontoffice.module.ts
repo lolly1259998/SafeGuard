@@ -10,6 +10,7 @@ import { NavbarComponent } from './navbar/navbar.component';
 
 
 import { FrontControlCentersComponent } from './front-control-centers/front-control-centers.component';
+import { FaceAuthComponent } from './face-auth/face-auth/face-auth.component';
 
 @NgModule({
   imports: [
@@ -20,7 +21,7 @@ import { FrontControlCentersComponent } from './front-control-centers/front-cont
     FrontControlCentersComponent,  CommonModule,
     FrontofficeRoutingModule,
     EventFrontComponent,
-    RouterModule,NavbarComponent,
+    RouterModule,NavbarComponent,FaceAuthComponent
   ],
 })
 export class FrontofficeModule {}

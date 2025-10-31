@@ -197,13 +197,11 @@ class Event(models.Model):
     )
 
     metadata = models.JSONField(default=dict, blank=True)
-    snapshot = models.ImageField(upload_to='events/', blank=True, null=True)
+    snapshot = models.ImageField(upload_to='events_snapshots/', null=True, blank=True)
 
     is_processed = models.BooleanField(default=False)
     processed_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
     notes = models.TextField(blank=True)
-
-    snapshot = models.ImageField(upload_to='events_snapshots/', null=True, blank=True)
 
     def __str__(self):
         return f"{self.event_type} @ {self.camera.name} ({self.timestamp.strftime('%Y-%m-%d %H:%M')})"
